@@ -1,0 +1,43 @@
+version: '3.8'
+services: #все контейнеры писать внутри
+    web-laravel-for-widgets:
+        build:
+            context: . # загрузка DockerFile
+        container_name: web-laravel-for-widgets #название контейнера
+        volumes: # монтирование каталогов
+            - ./:/var/www/html/
+        restart: always # всегда перезагружать если остановился
+        depends_on: # запускать этот контейнер после того как запуститься db
+            - db-laravel-for-widgets
+        extra_hosts:
+            - "laravel-for-widgets.test:127.0.0.1"
+        ports:
+            - "83:80"
+
+    db-laravel-for-widgets:
+        image: mysql
+        container_name: db-laravel-for-widgets
+        tty: true
+        volumes:
+            - ./dump:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: laravel-for-widgets
+            MYSQL_USER: laravel-for-widgets
+            MYSQL_PASSWORD: password
+        restart: always
+        ports:
+            - "3383:3306"
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin-laravel-for-widgets
+        links:
+            - db-laravel-for-widgets
+        environment:
+            PMA_HOST: db-laravel-for-widgets
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        ports:
+            - '89:80'
+        restart: always
