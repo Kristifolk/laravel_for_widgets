@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PetController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,3 +22,10 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::resource('clients', ClientController::class);
+//Route::resource('pets', PetController::class);
+
+//Route::resource([
+//    'clients' => ClientController::class,
+//    'pets' => PetController::class,
+//    ]);
