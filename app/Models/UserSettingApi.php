@@ -16,4 +16,10 @@ class UserSettingApi extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function doesTheUserHaveApiSettings($user): bool
+    {
+        $settings = self::where('user_id', $user->id)->first();
+        return !empty($settings) && !empty($settings->api_key) && !empty($settings->url);
+    }
 }

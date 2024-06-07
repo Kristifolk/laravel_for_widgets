@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PetController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,13 +16,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-
 Auth::routes();
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware(['check.api.settings'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+});
+
+Route::redirect ('/settingsApi', 'settingsApi');
+
+Route::get('/settingsApi', function (){
+    return view('settingsApi');
+})->name('settingsApi');
+
 //Route::resource('clients', ClientController::class);
 //Route::resource('pets', PetController::class);
 
