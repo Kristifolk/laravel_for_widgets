@@ -10,7 +10,7 @@ class UserSettingApi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['url', 'api_key',];
+    protected $fillable = ['url', 'api_key','user_id'];
 
     public function user(): BelongsTo
     {

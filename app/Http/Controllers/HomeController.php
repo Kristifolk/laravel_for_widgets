@@ -23,6 +23,13 @@ class HomeController extends Controller
      */
     public function index()
     {
+        //Запрос 50 чел по Api
         return view('home');
+    }
+
+    public function search()
+    {
+        //Запрос поиск  по Api ?
+        return view('search');
     }
 }

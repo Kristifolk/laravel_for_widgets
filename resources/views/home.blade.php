@@ -1,27 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-{{--                <div class="card-header">{{ __('Dashboard') }}</div>--}}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    {{--                <div class="card-header">{{ __('Dashboard') }}</div>--}}
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
+                    <div class="card-body">
+                        @if (session('status'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                        <a class="btn btn-primary me-md-2" href="{{ route('settingsApi.index') }}">Настройки API</a>
+{{--                        <a class="btn btn-primary me-md-2" href="{{ route('client.edit') }}">Добавить клиента</a>--}}
+{{--изменить роут обавить клиента--}}
                         <div>Добавить клиента</div>
-{{--                        ссылка или кнопка--}}
-                    <h3>Клиенты ветменеджера (лимит 50)</h3>
-                    <table class="table table-hover">
-                        <thead>
+                        {{--                        ссылка или кнопка--}}
+                        <h3>Клиенты ветменеджера (лимит 50)</h3>
+                        <table class="table table-hover">
+                            <thead>
                             <th scope="col">#</th>
-{{--                            <th scope="col">ФИО</th>--}}
+                            {{--                            <th scope="col">ФИО</th>--}}
                             <th scope="col">Имя</th>
                             <th scope="col">Фамилия</th>
                             <th scope="col">Отчество</th>
@@ -31,12 +32,12 @@
                             <th class="col-1">Редактировать</th>
                             <th class="col-1">Удалить</th>
 
-                        </thead>
+                            </thead>
 
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
