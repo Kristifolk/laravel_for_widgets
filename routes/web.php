@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PetController;
 use App\Http\Controllers\UserSettingApiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -20,15 +22,14 @@ Auth::routes();
 
 Route::middleware(['check.api.settings'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
 });
 
 Route::resource('settingsApi', UserSettingApiController::class);
+Route::resource('client', ClientController::class);
+Route::get('search',[ClientController::class,'search'])->name('search');
+Route::resource('pet', PetController::class);
 
 
-//Route::get('/settingsApi', function (){
-//    return view('settingsApi');
-//})->name('settingsApi');
 
 //Route::resource('clients', ClientController::class);
 //Route::resource('pets', PetController::class);

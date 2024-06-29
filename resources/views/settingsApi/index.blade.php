@@ -5,11 +5,9 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    {{--                <div class="card-header">{{ __('Dashboard') }}</div>--}}
 
                     <div class="card-body">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-
 
                             @if(!isset($settings->id))
                                 <a class="btn btn-primary me-md-2" href="{{ route('settingsApi.create') }}">Добавить</a>

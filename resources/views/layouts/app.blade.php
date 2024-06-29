@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Laravel_for_widgets') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -21,7 +21,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'Laravel_for_widgets') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -75,6 +75,16 @@
         <main class="py-4">
             @yield('content')
         </main>
+    </div>
+    <div class="container">
+        <footer class="py-3 my-4">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="{{ route('home') }}" class="nav-link px-2 text-body-secondary">На главную</a></li>
+                <li class="nav-item"><a href="{{ url()->previous() }}" class="nav-link px-2 text-body-secondary">Назад</a></li>
+                <li class="nav-item"><a href="{{ route('settingsApi.index') }}" class="nav-link px-2 text-body-secondary">Настройки API</a></li>
+            </ul>
+            <p class="text-center text-body-secondary">© 2024 Кристина Караваева</p>
+        </footer>
     </div>
 </body>
 </html>

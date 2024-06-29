@@ -11,7 +11,8 @@ class PetController extends Controller
      */
     public function index()
     {
-        //
+        dd('index pet');
+
     }
 
     /**
@@ -19,15 +20,17 @@ class PetController extends Controller
      */
     public function create()
     {
-        //
-    }
+        return view(
+            'pet.create'
+        );    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        dd('store pet');
+
     }
 
     /**
@@ -35,7 +38,14 @@ class PetController extends Controller
      */
     public function show(string $id)
     {
-        //
+//        $pet =
+//        return view(
+//            'pet.show',
+//            compact('pet')
+//        );
+        return view(
+            'pet.show'
+        );
     }
 
     /**
@@ -43,7 +53,9 @@ class PetController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view(
+            'pet.edit'
+        );
     }
 
     /**
@@ -51,7 +63,8 @@ class PetController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        dd('update pet');
+
     }
 
     /**
@@ -59,6 +72,7 @@ class PetController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        dd('destroy pet');
+
     }
 }
