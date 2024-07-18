@@ -29,7 +29,6 @@ class HomeController extends Controller
 
     public function search()
     {
-        //Запрос поиск  по Api ?
-        return view('search');
+        return view('client.search');
     }
 }

@@ -46,7 +46,7 @@
                                 <th>Имя</th>
                                 <th>Фамилия</th>
                                 <th>Отчество</th>
-                                <th>Питомцы</th>
+                                <th>имена? Питомцы</th>
                                 <th>
                                     <a class="btn btn-primary me-md-2"
                                        href="{{ route('client.show', 1) }}">Просмотреть</a>

@@ -7,7 +7,7 @@
             <div class="card">
 
                 <div class="card-body">
-                <form action="{{ route('client.edit', 1) }}" method="POST" onsubmit="return confirm('Проверьте правильность внесенных данных клиента');">
+                <form action="{{ route('client.update') }}" method="POST" onsubmit="return confirm('Проверьте правильность внесенных данных клиента');">
                     @csrf
                     @method('PUT')
 

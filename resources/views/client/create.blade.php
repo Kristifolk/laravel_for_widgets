@@ -6,10 +6,11 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('client.create', 1) }}" method="POST"
-                              onsubmit="return confirm('Проверьте правильность внесенных данных клиента');">
+                        <form action="{{ route('client.store', 1) }}" method="POST"
+                              onsubmit="return confirm('Проверьте правильность внесенных данных клиента7');">
                             @csrf
-                            @method('PUT')
+                            @method('POST')
+{{--                            @method('POST')--}}
 
                             <label for="basic-url" class="text-primary">Клиент Ветменеджер</label>
 
