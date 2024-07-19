@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ApiRequest;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,7 +25,12 @@ class HomeController extends Controller
     public function index()
     {
         //Запрос 50 чел по Api
-        return view('home');
+        $clients = (new ApiRequest())->getAllClients();
+
+        dd($clients);
+//        return view('home', compact('clients'));
+
+//        return view('home');
     }
 
     public function search()

@@ -17,11 +17,7 @@ class ClientController extends Controller
     public function index()
     {
 //        dd('index');
-//
-//        $clients = ApiRequest::getAllClients();
-//
-//        return view('home', compact('clients'));
-        return view('home');
+//        return view('home');
     }
 
     /**
