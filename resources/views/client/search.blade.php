@@ -8,11 +8,10 @@
 
                 <div class="card-body">
                     {{-- Таблица Клиент START --}}
-                    <h3>Результат поиска</h3>
+                    <h2>{{ $searchInfoMessage }}</h2>
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            {{--                            <th scope="col">ФИО</th>--}}
                             <th>#</th>
                             <th>Имя</th>
                             <th>Фамилия</th>
@@ -24,18 +23,21 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th>1</th>
-                            <th>Имя</th>
-                            <th>Фамилия</th>
-                            <th>Отчество</th>
-                            <th>Город</th>
-                            <th>Почта</th>
-                            <th>Телефон</th>
+                        @foreach($foundClients as $client)
+                            <tr>
+{{--TODO корректная нумерация # клиентов --}}
+                            <th>#</th>
+                            <th>{{ $client['first_name'] }}</th>
+                            <th>{{ $client['last_name'] }}</th>
+                            <th>{{ $client['middle_name'] }}</th>
+                            <th>{{ $client['city'] }}</th>
+                            <th>{{ $client['email'] }}</th>
+                            <th>{{ $client['home_phone'] }}</th>
                             <th>
-                                <a class="btn btn-primary me-md-2" href="{{ route('client.show', 1) }}">Просмотреть</a>
+                                <a class="btn btn-primary me-md-2" href="{{ route('client.show', $client['id'] ) }}">Просмотреть</a>
                             </th>
                         </tr>
+                        @endforeach
                         </tbody>
                     </table>
                     {{-- Таблица Клиент END --}}

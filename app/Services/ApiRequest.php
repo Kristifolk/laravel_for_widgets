@@ -7,6 +7,9 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Otis22\VetmanagerRestApi\Headers;
 use Otis22\VetmanagerRestApi\Headers\Auth\ApiKey;
+use Otis22\VetmanagerRestApi\Query\Filter\EqualTo;
+use Otis22\VetmanagerRestApi\Query\Filter\Value\StringValue;
+use Otis22\VetmanagerRestApi\Query\Filters;
 use Otis22\VetmanagerRestApi\Query\PagedQuery;
 use Otis22\VetmanagerRestApi\Query\Sort\AscBy;
 use Otis22\VetmanagerRestApi\Query\Sorts;
@@ -31,71 +34,106 @@ class ApiRequest
 //    {
 //
 //    }
-
-    /**
-     *Вывод по 50 клиентов
-     */
-    public function getAllClients()
+    private function authHeaders(): Headers\WithAuth
     {
-        $authHeaders = new Headers\WithAuth(
+        return new Headers\WithAuth(
             new Headers\Auth\ByApiKey(
                 new ApiKey($this->key)
             )
         );
+    }
 
-        $sorts = new Sorts(
-            new AscBy(
-                new Property('id')
-            )
-        );
-
-        $pagedQuery = PagedQuery::forGettingTop(
-            new Query(
-                $sorts
-            ),
-            50
-        );
-
+    private function response($url, $nameModal)
+    {
         $response = $this->client->request(
             'GET',
-            '/rest/api/client',
+            $url,
             [
-                'headers' => $authHeaders->asKeyValue(),
-                'query' => $pagedQuery->asKeyValue()
+                'headers' => $this->authHeaders()->asKeyValue(),
+//                'query' => $pagedQuery->asKeyValue()
             ]
         );
 
-        return json_decode($response->getBody(), true);
+        $array = json_decode($response->getBody(), true);
+
+        return $array['data'][$nameModal];
     }
+
+    public function getAll(string $nameModal, string $url = '/rest/api/')
+    {
+        $url = $url . $nameModal;
+        return $this->response($url, $nameModal);
+    }
+
     /**
      *Вывод 1 клиента
      */
-    public function getClient(int $id)
-    {
-
+    public function getClient(int $id){
+        $url = "/rest/api/client/$id";
+        return $this->response($url, 'client');
     }
+
+//    public function getClient(int $id)
+//    {
+//        $response = $this->client->request(
+//            'GET',
+//            "/rest/api/client/$id",
+//            [
+//                'headers' => $this->authHeaders()->asKeyValue(),
+//            ]
+//        );
+//
+//        $array = json_decode($response->getBody(), true);
+//
+//        return $array['data']['client'];
+//    }
 
     public function deleteClient(int $id)
     {
 
     }
 
-    public function searchClient(Request $request)
+//TODO поиск по полному ФИО
+    /**
+     *Поиск по Фамилии по всем клиентам Ветменеджер, не только для первых 50 шт
+     */
+    public function searchClients($lastname)
+    {
+        $foundClients['data']['client'] = [];
+
+        if(!empty($lastname)) {
+            $filters = new Filters(new EqualTo(new Property('last_name'), new StringValue($lastname)));
+
+            $response = $this->client->request(
+                'GET',
+                '/rest/api/client',
+                [
+                    'headers' => $this->authHeaders()->asKeyValue(),
+                    'query' => $filters->asKeyValue()
+                ]
+            );
+
+            $foundClients = json_decode($response->getBody(), true);
+        }
+
+        return $foundClients['data']['client'];
+    }
+
+    public function getAllPetsClient($owner_id)
+    {
+        $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$owner_id'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
+        return $this->response($url, 'pet');
+    }
+
+    public function getPet(int $id)
+    {
+        $url = "/rest/api/pet/$id";
+        return $this->response($url, 'pet');
+    }
+
+    public function deletePet(int $owner_id)
     {
 
     }
 
-    public function getAllPetsClient($id_client)
-    {
-
-    }
-
-    public function getPet(int $id_client)
-    {
-
-    }
-    public function deletePet(int $id_client)
-    {
-
-    }
 }

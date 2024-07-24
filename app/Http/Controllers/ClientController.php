@@ -11,9 +11,6 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    /**
-     *Вывод по 50 клиентов
-     */
     public function index()
     {
 //        dd('index');
@@ -38,7 +35,7 @@ class ClientController extends Controller
             [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
-                'patronymic' => $request->patronymic,
+                'middle_name' => $request->middle_name,
                 'email' => $request->email,
                 'city' => $request->city,
                 'phone' => $request->phone,
@@ -70,14 +67,15 @@ class ClientController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Клиент и все его питомцы.
      */
-    public function show(int $id)
+    public function show(int $owner_id)
     {
-//        $client = ApiRequest::getClient($id);
-//        $pets = $client->pets;
-//        return view('client.show', compact('client', 'pets'));
-        return view('client.show');
+//        $client = (new ApiRequest)->getClient($owner_id);
+        $pets =  (new ApiRequest)->getAllPetsClient($owner_id);
+        $client = $pets[0]['owner'];
+
+        return view('client.show', compact('client', 'pets'));
     }
 
     /**
@@ -101,7 +99,7 @@ class ClientController extends Controller
             [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
-                'patronymic' => $request->patronymic,
+                'middle_name' => $request->middle_name,
                 'email' => $request->email,
                 'city' => $request->city,
                 'phone' => $request->phone,
@@ -126,11 +124,21 @@ class ClientController extends Controller
 
     }
 
-    public function search(Request $request)
+    public function search(Request $request)//валидация?
     {
-//        dd('search');
-//        $searchClient = ApiRequest::searchClient($request);
-//        return view('client.search', compact('searchClient'));
-        return view('client.search');
+        $lastname = $request->input('last_name');
+//        $firstname = $request->input('first_name');
+//        $middlename = $request->input('middle_name');
+//        $foundClients = (new ApiRequest())->searchClients($lastname, $firstname, $middlename);
+
+        $foundClients = (new ApiRequest())->searchClients($lastname);
+
+        if(!empty($foundClients)){
+            $searchInfoMessage = "Результаты поиска по запросу: $lastname";
+        } else {
+            $searchInfoMessage = "По результатом поиска не найдено совпадений";
+        }
+
+        return view('client.search', compact('foundClients', 'searchInfoMessage'));
     }
 }

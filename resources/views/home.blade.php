@@ -16,7 +16,7 @@
                             <form class="d-flex" action="{{ route('search') }}" method="GET">
                                 @csrf
                                 @method('GET')
-                                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+                                <input class="form-control me-2" type="search" name="last_name" placeholder="Поиск" aria-label="Поиск">
                                 <button class="btn btn-outline-primary" type="submit">Поиск клиента</button>
                             </form>
                         </div>
@@ -29,45 +29,41 @@
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                {{--                            <th scope="col">ФИО</th>--}}
                                 <th scope="col">Имя</th>
                                 <th scope="col">Фамилия</th>
                                 <th scope="col">Отчество</th>
-                                <th scope="col">Питомцы</th>
                                 <th class="col-1">Просмотреть</th>
                                 <th class="col-1">Редактировать</th>
                                 <th class="col-1">Удалить</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {{--                                @foreach($clients as $client)--}}
-                            <tr>
-                                <th>id или порядковый номер от 1 до 50</th>
-                                <th>Имя</th>
-                                <th>Фамилия</th>
-                                <th>Отчество</th>
-                                <th>имена? Питомцы</th>
+                            {{--TODO корректная нумерация # клиентов вместо id или в дополнение к id --}}
+                            @foreach($firstFiftyClients as $client)
+                                <tr>
+                                <th>{{ $client['id'] }}</th>
+                                <th>{{ $client['first_name'] }}</th>
+                                <th>{{ $client['last_name'] }}</th>
+                                <th>c</th>
                                 <th>
                                     <a class="btn btn-primary me-md-2"
-                                       href="{{ route('client.show', 1) }}">Просмотреть</a>
+                                       href="{{ route('client.show', $client['id']) }}">Просмотреть</a>
                                 </th>
                                 <th>
-                                    <a class="btn btn-primary me-md-2" href="{{ route('client.edit', 1) }}">Редактировать</a>
+                                    <a class="btn btn-primary me-md-2" href="{{ route('client.edit', $client['id']) }}">Редактировать</a>
                                 </th>
                                 <th>
-                                    <form action="{{ route('client.destroy', 1) }}" method="POST" onsubmit="return confirm('Вы действительно хотите удалить этого клиента со всеми питомцами?');">
+                                    <form action="{{ route('client.destroy', $client['id']) }}" method="POST" onsubmit="return confirm('Вы действительно хотите удалить этого клиента со всеми питомцами?');">
                                         @csrf
                                         @method('DELETE')
                                         <button  type="submit" class="btn btn-primary me-md-2">Удалить</button>
                                     </form>
                                 </th>
                             </tr>
-                            {{--                                @endforeach--}}
+                            @endforeach
                             </tbody>
-
                         </table>
                         {{-- Таблица END --}}
-
                     </div>
                 </div>
             </div>

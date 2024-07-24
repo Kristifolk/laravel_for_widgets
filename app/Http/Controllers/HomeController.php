@@ -18,23 +18,16 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
+     *Вывод по 50 клиентов на хоум странице
      */
     public function index()
     {
-        //Запрос 50 чел по Api
-        $clients = (new ApiRequest())->getAllClients();
+        $clients = (new ApiRequest())->getAll('client');
+        $firstFiftyClients = array_slice($clients, 0, 50);
 
-        dd($clients);
-//        return view('home', compact('clients'));
-
+        return view('home', compact('firstFiftyClients'));
 //        return view('home');
     }
 
-    public function search()
-    {
-        return view('client.search');
-    }
+
 }

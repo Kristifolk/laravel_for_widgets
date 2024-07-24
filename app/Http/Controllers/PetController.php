@@ -8,17 +8,11 @@ use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-//    public function index($id_client)
-//    {
-//        dd('index pet');
-////        $pets = ApiRequest::getAllPetsClient($id_client);
-////
-////        return view('client.show', compact('$pets'));
+    public function index($owner_id)
+    {
 //
-//    }
+
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -32,10 +26,10 @@ class PetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,$ClientId)
+    public function store(Request $request,$owner_id)
     {
         dd('store pet');
-//        $client = ApiRequest::getClient($ClientId);
+//        $client = ApiRequest::getClient($owner_id);
 //        $pets = [];
 //
 //        if ($request->has('pets')) {
@@ -64,11 +58,11 @@ class PetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $ClientId, int $id)
+    public function show(int $owner_id, int $id)
     {
-//        $client = ApiRequest::getClient($ClientId);
+        $client = (new ApiRequest())->getClient($owner_id);
 //        $pets = [];
-////или         $pet = ApiRequest::getPet($id);
+        $pet = (new ApiRequest())->getPet($id);;
 //        if ($client->pets) {
 //            foreach ($client->pets as $pet) {
 //                $pets[] = $pet;
@@ -76,9 +70,9 @@ class PetController extends Controller
 //
 //        return view('pet.show', compact('client','pets'));
 
-        return view(
-            'pet.show'
-        );
+//        return view(
+//            'pet.show'
+//        );
     }
 
     /**
