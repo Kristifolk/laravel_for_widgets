@@ -2,77 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePetFormRequest;
 use App\Models\Pet;
 use App\Services\ApiRequest;
 use Illuminate\Http\Request;
+use mysql_xdevapi\Exception;
 
 class PetController extends Controller
 {
-    public function index($owner_id)
+    public function index($ownerId)
     {
 //
-
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(int $ownerId)
     {
-        return view(
-            'pet.create'
-        );    }
+//        dd('create');
+//        dd(gettype($ownerId));
+
+        return view('pet.create',  compact('ownerId'));
+    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,$owner_id)
+//    public function store(StorePetFormRequest $request, $ownerId)
+    public function store(StorePetFormRequest $request,$ownerId)
     {
-        dd('store pet');
-//        $client = ApiRequest::getClient($owner_id);
-//        $pets = [];
-//
-//        if ($request->has('pets')) {
-//            foreach ($request->pets as $pet) {
-//                $pet = Pet::create(
-//                    [
-//                        'client_id' => $client->id,
-//                        'name' => $pet['name'],
-//                        'type' => $pet['type'],
-//                        'breed' => $pet['breed'] ?? null,
-//                        'color' => $pet['color'] ?? null,
-//                        'age' => $pet['age'] ?? null,
-//                    ]
-//                );
-//                $pets[] = $client->pets;
-//                $pets[] = $pet;
-//            }
-//        }
-//        $pets[] = $client->pets;
-//        return response()->json([
-//            'success' => true,
-//            'pets' => $pets,
-//        ]);
+//        dd(gettype($ownerId));
+        try {
+            $validated = $request->validated();//как узнать прошла ли валидация?
+//            dd($request);
+            (new ApiRequest())->createInVetmanager('pet', $validated);
+//            return redirect(url()->previous());
+            dd($validated);
+//            return redirect("client/{$validated['ownerId']}']}");
+            return redirect("client/$ownerId");
+        } catch (\Exception $exception) {
+            dd(1111);
+            dd($exception->getMessage());
+            return back()->withErrors($exception->getMessage());
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(int $owner_id, int $id)
+    public function show(int $id)
     {
-        $client = (new ApiRequest())->getClient($owner_id);
-//        $pets = [];
-        $pet = (new ApiRequest())->getPet($id);;
-//        if ($client->pets) {
-//            foreach ($client->pets as $pet) {
-//                $pets[] = $pet;
-//            }
-//
-//        return view('pet.show', compact('client','pets'));
-
-//        return view(
-//            'pet.show'
-//        );
+        $pet = (new ApiRequest())->getPet($id);
+        dd($pet);
+        return view('pet.show', compact('pet'));
     }
 
     /**
@@ -80,9 +63,7 @@ class PetController extends Controller
      */
     public function edit(int $id)
     {
-        return view(
-            'pet.edit'
-        );
+        return view('pet.edit');
     }
 
     /**

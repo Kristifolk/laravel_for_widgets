@@ -6,11 +6,9 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('client.store', 1) }}" method="POST"
+                        <form action="{{ route('client.store') }}" method="POST"
                               onsubmit="return confirm('Проверьте правильность внесенных данных клиента7');">
                             @csrf
-                            @method('POST')
-{{--                            @method('POST')--}}
 
                             <label for="basic-url" class="text-primary">Клиент Ветменеджер</label>
 
@@ -66,12 +64,12 @@
                                     </div>
 
                                     <div class="input-group mb-3">
-                                        <span class="input-group-text">Окрас</span>
-                                        <input type="text" class="form-control" placeholder="Введите окрас питомца"
-                                               aria-label="Окрас">
-                                        <span class="input-group-text">Возраст</span>
-                                        <input type="text" class="form-control" placeholder="Введите возраст питомца"
-                                               aria-label="Возраст">
+                                        <span class="input-group-text">Пол</span>
+                                        <input type="text" class="form-control" placeholder="Введите пол питомца"
+                                               aria-label="Пол">
+{{--                                        <span class="input-group-text">Возраст</span>--}}
+{{--                                        <input type="text" class="form-control" placeholder="Введите возраст питомца"--}}
+{{--                                               aria-label="Возраст">--}}
                                     </div>
                                 </div>
                             </div>

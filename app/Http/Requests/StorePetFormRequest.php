@@ -24,8 +24,8 @@ class StorePetFormRequest extends FormRequest
         return [
             'alias' => 'required|max:50',
             'owner_id' => 'required',
+//            'breed_id' => 'required|int',
             'type_id' => 'required',
-            'breed_id' => 'required',
         ];
     }
 }

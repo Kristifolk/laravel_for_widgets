@@ -30,50 +30,53 @@ class ClientController extends Controller
      */
     public function store(StoreClientFormRequest $request)
     {
-//        dd('store');
-        $client = Client::create(
-            [
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'middle_name' => $request->middle_name,
-                'email' => $request->email,
-                'city' => $request->city,
-                'phone' => $request->phone,
-            ]
-        );
-        $pets = [];
-
-        if ($request->has('pets')) {
-            foreach ($request->pets as $pet) {
-                $pet = Pet::create(
-                    [
-                        'client_id' => $client->id,//откуда взять
-                        'name' => $pet['name'],
-                        'type' => $pet['type'],
-                        'breed' => $pet['breed'] ?? null,
-                        'color' => $pet['color'] ?? null,
-                        'age' => $pet['age'] ?? null,
-                    ]
-                );
-                $pets[] = $pet;
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'client' => $client,
-            'pets' => $pets,
-        ]);
+        dd('store');
+//        $client = Client::create(
+//            [
+//                'first_name' => $request->first_name,
+//                'last_name' => $request->last_name,
+//                'middle_name' => $request->middle_name,
+//                'email' => $request->email,
+//                'city' => $request->city,
+//                'phone' => $request->phone,
+//            ]
+//        );
+//        $pets = [];
+//
+//        if ($request->has('pets')) {
+//            foreach ($request->pets as $pet) {
+//                $pet = Pet::create(
+//                    [
+//                        'client_id' => $client->id,//откуда взять
+//                        'name' => $pet['name'],
+//                        'type' => $pet['type'],
+//                        'breed' => $pet['breed'] ?? null,
+//                        'color' => $pet['color'] ?? null,
+//                        'age' => $pet['age'] ?? null,
+//                    ]
+//                );
+//                $pets[] = $pet;
+////            }
+//        }
+//
+//        return response()->json([
+//            'success' => true,
+//            'client' => $client,
+//            'pets' => $pets,
+//        ]);
     }
 
     /**
      * Клиент и все его питомцы.
      */
-    public function show(int $owner_id)
+    public function show(string $ownerId)
     {
-//        $client = (new ApiRequest)->getClient($owner_id);
-        $pets =  (new ApiRequest)->getAllPetsClient($owner_id);
+//        dd($ownerId);
+//        dd(gettype($ownerId));
+//        $client = (new ApiRequest)->getClient($ownerId);
+        $pets =  (new ApiRequest)->getAllPetsClient($ownerId);
         $client = $pets[0]['owner'];
+//        dd($pets);
 
         return view('client.show', compact('client', 'pets'));
     }

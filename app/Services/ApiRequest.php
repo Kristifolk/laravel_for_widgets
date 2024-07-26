@@ -119,9 +119,9 @@ class ApiRequest
         return $foundClients['data']['client'];
     }
 
-    public function getAllPetsClient($owner_id)
+    public function getAllPetsClient($ownerId)
     {
-        $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$owner_id'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
+        $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$ownerId'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
         return $this->response($url, 'pet');
     }
 
@@ -131,9 +131,26 @@ class ApiRequest
         return $this->response($url, 'pet');
     }
 
-    public function deletePet(int $owner_id)
+    public function deletePet(int $ownerId)
     {
 
     }
 
+    public function createInVetmanager($nameModal, $data)
+    {
+        $response = $this->client->request(
+            'POST',
+            "/rest/api/$nameModal",
+            [
+                'headers' => $this->authHeaders()->asKeyValue(),
+                'json' => $data,
+            ]
+        );
+        $decodeBody = json_decode((string)$response->getBody(), true);
+//        dd($decodeBody);
+//        dd($decodeBody['message']);
+        if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
+            throw new \Exception($decodeBody['message']);
+        }
+    }
 }

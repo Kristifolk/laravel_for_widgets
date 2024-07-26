@@ -6,56 +6,64 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('pet.create', 1) }}" method="POST"
+                        <form action="{{ route('pet.store', $ownerId) }}" method="POST"
                               onsubmit="return confirm('Проверьте правильность внесенных данных питомца');">
                             @csrf
-                            @method('PUT')
+                            <input type="hidden" name="owner_id" value="{{ $ownerId }}">
 
                             <label for="basic-url" class="text-primary">Питомец</label>
                             <div id="pet-fields-container">
                                 <div class="pet-fields">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">Кличка</span>
-                                        <input type="text" class="form-control" placeholder="Введите кличку питомца"
-                                               aria-label="Кличка" aria-describedby="basic-addon1">
+                                        <input type="text" class="form-control" placeholder="Введите кличку"
+                                               aria-label="Кличка" aria-describedby="basic-addon1" name="alias" required>
                                     </div>
-
+{{--TODO выпадающий список в идеале по апи запрос,чтобы всегда актуальные данные--}}
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">Вид</span>
-                                        <input type="text" class="form-control" placeholder="Введите вид питомца"
-                                               aria-label="Вид">
+{{--                                        <input type="text" class="form-control" placeholder="Введите вид"--}}
+{{--                                               aria-label="Вид" name="type[title]">--}}
+                                        <select class="form-select" aria-label="Default select example" name="type_id">
+{{--                                            <option selected>Выберите вид...</option>--}}
+                                            <option value="1">Кошки</option>
+                                            <option value="2">Собаки</option>
+                                            <option value="3">Грызуны</option>
+                                            <option value="4">Птицы</option>
+                                            <option value="5">Рептилии</option>
+                                            <option value="6">Сельскохозяйственные</option>
+                                        </select>
+
                                         <span class="input-group-text">Порода</span>
-                                        <input type="text" class="form-control" placeholder="Введите породу питомца"
-                                               aria-label="Порода">
+                                        <input type="text" class="form-control" placeholder="Введите породу"
+                                               aria-label="Порода" name="breed_id">
                                     </div>
 
                                     <div class="input-group mb-3">
-                                        <span class="input-group-text">Окрас</span>
-                                        <input type="text" class="form-control" placeholder="Введите окрас питомца"
-                                               aria-label="Окрас">
-                                        <span class="input-group-text">Возраст</span>
-                                        <input type="text" class="form-control" placeholder="Введите возраст питомца"
-                                               aria-label="Возраст">
+                                        <span class="input-group-text">Пол</span>
+                                        <input type="text" class="form-control" placeholder="Введите пол"
+                                               aria-label="Пол" name="sex">
+                                        <select class="form-select" aria-label="Default select example" name="sex">
+                                            <option value="unknown">Не известен</option>
+                                            <option value="male">Самец</option>
+                                            <option value="female">Самка</option>
+{{--                                            <option value="">Кастрирован</option>--}}
+{{--                                            <option value="">Стерилизована</option>--}}
+                                        </select>
+
+{{--                                        <span class="input-group-text">Возраст</span>--}}
+{{--                                        <input type="text" class="form-control" placeholder="Введите возраст"--}}
+{{--                                               aria-label="Возраст">--}}
                                     </div>
                                 </div>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="button" class="btn btn-secondary me-md-2" id="add-pet-button">Добавить Питомца</button>
-
                                 <button type="submit" class="btn btn-primary me-md-2">Сохранить</button>
-                                {{--                        //пет контроллер метод сторе или апдате--}}
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            @endsection
-{{--            @push('scripts')--}}
-{{--                <script>--}}
-{{--                   --}}
-{{--                </script>--}}
-
-{{--    @endpush--}}
-            @push('scripts')
-                @vite(['resources/js/addPet.js'])
-            @endpush
+        </div>
+    </div>
+@endsection
