@@ -20,10 +20,10 @@ document.getElementById('add-pet-button').addEventListener('click', function () 
             </div>
 
             <div class="input-group mb-3">
-                <span class="input-group-text">Окрас</span>
-                <input type="text" class="form-control" placeholder="Введите окрас питомца" aria-label="Окрас" name="pets[${petFieldsCount}][color]">
-                <span class="input-group-text">Возраст</span>
-                <input type="text" class="form-control" placeholder="Введите возраст питомца" aria-label="Возраст" name="pets[${petFieldsCount}][age]">
+                <span class="input-group-text">Пол</span>
+                <input type="text" class="form-control" placeholder="Введите пол питомца" aria-label="Пол" name="pets[${petFieldsCount}][sex]">
+<!--                <span class="input-group-text">Возраст</span>-->
+<!--                <input type="text" class="form-control" placeholder="Введите возраст питомца" aria-label="Возраст" name="pets[${petFieldsCount}][age]">-->
             </div>
         `;
 

@@ -13,7 +13,6 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            {{--                            <th>ФИО</th>--}}
                             <th>Имя</th>
                             <th>Фамилия</th>
                             <th>Отчество</th>
@@ -21,59 +20,51 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <th>Имя</th>
-                            <th>Фамилия</th>
-                            <th>Отчество</th>
+                            <th>{{ $pet['owner']['first_name'] }}</th>
+                            <th>{{ $pet['owner']['last_name'] }}</th>
+                            <th>{{ $pet['owner']['middle_name'] }}</th>
                         </tr>
                         </tbody>
-
                     </table>
                     {{-- Таблица Клиент END --}}
-            </div>
+                </div>
                 <div class="card-body">
                     {{-- Таблица Питомцы START --}}
                     <h3>Питомец клиента</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            {{--                            <th scope="col">ФИО</th>--}}
-                            <th>#</th>
+                            <th>id</th>
                             <th>Кличка</th>
                             <th>Вид</th>
                             <th>Порода</th>
-                            <th>Окрас</th>
-                            <th>Возраст</th>
+                            <th>Пол</th>
                             <th>Редактировать</th>
                             <th>Удалить</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {{--                                @foreach($pets as $pet)--}}
-                    <tr>
-                        <th>id</th>
-                        <th>Кличка</th>
-                        <th>Вид</th>
-                        <th>Порода</th>
-                        <th>Окрас</th>
-                        <th>Возраст</th>
-                        <th>
-                            <a class="btn btn-primary me-md-2" href="{{ route('pet.edit', 1) }}">Редактировать</a>
-                        </th>
-                        <th>
-                            <form action="{{ route('pet.destroy', 1) }}" method="POST" onsubmit="return confirm('Вы действительно хотите удалить этого питомца?');">
-                                @csrf
-                                @method('DELETE')
-                                <button  type="submit" class="btn btn-primary me-md-2">Удалить</button>
-                            </form>
-                        </th>
-                    </tr>
-                    {{--                                @endforeach--}}
-                    </tbody>
-
+                        <tr>
+                            <th>{{ $pet['id'] }}</th>
+                            <th>{{ $pet['alias'] }}</th>
+                            <th>{{ $pet['type']['title'] }}</th>
+                            <th>{{ $pet['breed']['title'] }}</th>
+                            <th>{{ $pet['sex'] }}</th>
+                            <th>
+                                <a class="btn btn-primary me-md-2" href="{{ route('pet.edit', $pet['id']) }}">Редактировать</a>
+                            </th>
+                            <th>
+                                <form action="{{ route('pet.destroy', $pet['id']) }}" method="POST" onsubmit="return confirm('Вы действительно хотите удалить этого питомца?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button  type="submit" class="btn btn-primary me-md-2">Удалить</button>
+                                </form>
+                            </th>
+                        </tr>
+                        </tbody>
                     </table>
                     {{-- Таблица Питомцы END --}}
                 </div>
-
         </div>
     </div>
 </div>

@@ -44,7 +44,7 @@
                                 <th>{{ $client['id'] }}</th>
                                 <th>{{ $client['first_name'] }}</th>
                                 <th>{{ $client['last_name'] }}</th>
-                                <th>c</th>
+                                <th>{{ $client['middle_name'] }}</th>
                                 <th>
                                     <a class="btn btn-primary me-md-2"
                                        href="{{ route('client.show', $client['id']) }}">Просмотреть</a>
@@ -59,7 +59,7 @@
                                         <button  type="submit" class="btn btn-primary me-md-2">Удалить</button>
                                     </form>
                                 </th>
-                            </tr>
+                                </tr>
                             @endforeach
                             </tbody>
                         </table>

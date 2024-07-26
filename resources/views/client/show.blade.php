@@ -28,7 +28,7 @@
                             <th>{{ $client['id'] }}</th>
                             <th>{{ $client['first_name'] }}</th>
                             <th>{{ $client['last_name'] }}</th>
-                            <th>{{ $client['last_name'] }}</th>
+                            <th>{{ $client['middle_name'] }}</th>
                             <th>{{ $client['city'] }}</th>
                             <th>{{ $client['email'] }}</th>
                             <th>{{ $client['home_phone'] }}</th>
@@ -43,27 +43,6 @@
                                 </form>
                             </th>
                         </tr>
-
-                        <tr>
-                            <th>{{ $client['id'] }}</th>
-                            <th>{{ $client['first_name'] }}</th>
-                            <th>{{ $client['last_name'] }}</th>
-                            <th>{{ $client['last_name'] }}</th>
-                            <th>{{ $client['city'] }}</th>
-                            <th>{{ $client['email'] }}</th>
-                            <th>{{ $client['home_phone'] }}</th>
-                            <th>
-                                <a class="btn btn-primary me-md-2" href="{{ route('client.edit', $client['id']) }}">Редактировать</a>
-                            </th>
-                            <th>
-                                <form action="{{ route('client.destroy', $client['id']) }}" method="POST" onsubmit="return confirm('Вы действительно хотите удалить этого клиента со всеми питомцами?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button  type="submit" class="btn btn-primary me-md-2">Удалить</button>
-                                </form>
-                            </th>
-                        </tr>
-
                         </tbody>
 
                     </table>
@@ -73,7 +52,7 @@
                     {{-- Таблица Питомцы START --}}
                     <h3>Питомцы клиента</h3>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a class="btn btn-primary me-md-2" href="{{ route('pet.create') }}">Добавить питомца</a>
+                        <a class="btn btn-primary me-md-2" href="{{ route('pet.create', $client['id']) }}">Добавить питомца</a>
                     </div>
                     <table class="table table-hover">
                         <thead>

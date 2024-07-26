@@ -26,10 +26,10 @@
                     </div>
 
                     <div class="input-group mb-3">
-                        <span class="input-group-text">Окрас</span>
-                        <input type="text" class="form-control" placeholder="Введите окрас питомца" aria-label="Окрас">
-                        <span class="input-group-text">Возраст</span>
-                        <input type="text" class="form-control" placeholder="Введите возраст питомца" aria-label="Возраст">
+                        <span class="input-group-text">Пол</span>
+                        <input type="text" class="form-control" placeholder="Введите пол питомца" aria-label="Пол">
+{{--                        <span class="input-group-text">Возраст</span>--}}
+{{--                        <input type="text" class="form-control" placeholder="Введите возраст питомца" aria-label="Возраст">--}}
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -37,6 +37,8 @@
 {{--                        //пет контроллер метод сторе или апдате--}}
                     </div>
                 </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
