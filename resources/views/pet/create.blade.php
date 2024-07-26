@@ -35,14 +35,13 @@
                                         </select>
 
                                         <span class="input-group-text">Порода</span>
-                                        <input type="text" class="form-control" placeholder="Введите породу"
-                                               aria-label="Порода" name="breed_id">
+                                        <select class="form-select" aria-label="Default select example"
+                                                id="breedId" name="breed_id">
+                                        </select>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">Пол</span>
-                                        <input type="text" class="form-control" placeholder="Введите пол"
-                                               aria-label="Пол" name="sex">
                                         <select class="form-select" aria-label="Default select example" name="sex">
                                             <option value="unknown">Не известен</option>
                                             <option value="male">Самец</option>
