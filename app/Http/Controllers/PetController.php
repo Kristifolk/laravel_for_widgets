@@ -6,7 +6,6 @@ use App\Http\Requests\StorePetFormRequest;
 use App\Models\Pet;
 use App\Services\ApiRequest;
 use Illuminate\Http\Request;
-use mysql_xdevapi\Exception;
 
 class PetController extends Controller
 {
