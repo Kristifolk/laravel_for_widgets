@@ -19,7 +19,6 @@
                                         <input type="text" class="form-control" placeholder="Введите кличку"
                                                aria-label="Кличка" aria-describedby="basic-addon1" name="alias" required>
                                     </div>
-{{--TODO выпадающий список в идеале по апи запрос,чтобы всегда актуальные данные--}}
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">Вид</span>
                                         <select class="form-select" aria-label="Default select example" name="type_id" id="typeId">
@@ -31,7 +30,6 @@
                                         <select class="form-select" aria-label="Default select example"
                                                 id="breedId" name="breed_id"
                                                 disabled="disabled">
-{{--                                            <option selected>Выберите породу...</option>--}}
 
                                         </select>
                                     </div>
@@ -43,13 +41,10 @@
                                             <option value="male">Самец</option>
                                             <option value="female">Самка</option>
                                         </select>
-
-{{--                                        <span class="input-group-text">Возраст</span>--}}
-{{--                                        <input type="text" class="form-control" placeholder="Введите возраст"--}}
-{{--                                               aria-label="Возраст">--}}
                                     </div>
                                 </div>
                             </div>
+
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button type="submit" class="btn btn-primary me-md-2">Сохранить</button>
                             </div>
@@ -88,12 +83,12 @@
    }
 
    async function getBreedByTypeForSelectOption() {
+       clearSelectOptionsBreedByType('breedId');
        const selectedTypeId = document.getElementById("typeId").value;
-       // console.log(selectedTypeId)
+
        if (!selectedTypeId) return;
 
        try {
-       // const responseBreedByType = await fetch("https://testdevkris.vetmanager2.ru/rest/api/breed/{selectedTypeId}", {
            const responseBreedByType = await fetch(
                `http://localhost:83/client/{{$ownerId}}/getBreedByType/${selectedTypeId}`, {
        });
@@ -114,9 +109,13 @@
        let row =`<option value="${type.id}">${type.title}</option>`
        document.getElementById("typeId").innerHTML += row;
    }
+   function clearSelectOptionsBreedByType(selectElementId) {
+       let selectElement = document.getElementById(selectElementId);
+       selectElement.innerHTML = '';
+   }
 
    function insertIntoSelectOptionBreedByType(breed) {
-document.getElementById('breedId').removeAttribute('disabled')
+       document.getElementById('breedId').removeAttribute('disabled')
        let row =`<option value="${breed.id}">${breed.title}</option>`
        document.getElementById("breedId").innerHTML += row;
    }

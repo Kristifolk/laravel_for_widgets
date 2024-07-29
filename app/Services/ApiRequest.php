@@ -199,24 +199,20 @@ class ApiRequest
         return json_decode($response->getBody(), true);
     }
 
-      public  function getBreedByType($selectedTypeId)
+      public  function getBreedByType($client, $selectedTypeId)
     {
-        dd($selectedTypeId);
-            $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue('$selectedTypeId')));
+        $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue($selectedTypeId)));
 
-            $response = $this->client->request(
-                'GET',
+        $response = $this->client->request(
+            'GET',
 //            "/rest/api/breed/?filter=[{'property':'pet_type_id', 'value':'$selectedTypeId'}]",
-                "/rest/api/breed",
-                [
-                    'headers' => $this->authHeaders()->asKeyValue(),
-                    'query' => $filters->asKeyValue(),
-                ]
-            );
-            $data = json_decode($response->getBody(), true);
-
-        dd ($data);
-        return $data;
+            "/rest/api/breed",
+            [
+                'headers' => $this->authHeaders()->asKeyValue(),
+                'query' => $filters->asKeyValue(),
+            ]
+        );
+        return json_decode($response->getBody(), true);
     }
 
 }

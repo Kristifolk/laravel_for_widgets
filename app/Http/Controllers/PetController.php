@@ -30,17 +30,12 @@ class PetController extends Controller
      */
     public function store(StorePetFormRequest $request,$ownerId)
     {
-//        dd(gettype($ownerId));
         try {
-            $validated = $request->validated();//как узнать прошла ли валидация?
-//            dd($request);
+            $validated = $request->validated();
             (new ApiRequest())->createInVetmanager('pet', $validated);
-//            return redirect(url()->previous());
-//            dd($validated);
-//            return redirect("client/{$validated['ownerId']}']}");
+
             return redirect("client/$ownerId");
         } catch (\Exception $exception) {
-            dd($exception->getMessage());
             return back()->withErrors($exception->getMessage());
         }
     }
