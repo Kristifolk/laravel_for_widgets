@@ -22,21 +22,17 @@
 {{--TODO выпадающий список в идеале по апи запрос,чтобы всегда актуальные данные--}}
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">Вид</span>
-{{--                                        <input type="text" class="form-control" placeholder="Введите вид"--}}
-{{--                                               aria-label="Вид" name="type[title]">--}}
-                                        <select class="form-select" aria-label="Default select example" name="type_id">
-{{--                                            <option selected>Выберите вид...</option>--}}
-                                            <option value="1">Кошки</option>
-                                            <option value="2">Собаки</option>
-                                            <option value="3">Грызуны</option>
-                                            <option value="4">Птицы</option>
-                                            <option value="5">Рептилии</option>
-                                            <option value="6">Сельскохозяйственные</option>
+                                        <select class="form-select" aria-label="Default select example" name="type_id" id="typeId">
+                                            <option selected>Выберите вид...</option>
+
                                         </select>
 
                                         <span class="input-group-text">Порода</span>
                                         <select class="form-select" aria-label="Default select example"
-                                                id="breedId" name="breed_id">
+                                                id="breedId" name="breed_id"
+                                                disabled="disabled">
+{{--                                            <option selected>Выберите породу...</option>--}}
+
                                         </select>
                                     </div>
 
@@ -46,8 +42,6 @@
                                             <option value="unknown">Не известен</option>
                                             <option value="male">Самец</option>
                                             <option value="female">Самка</option>
-{{--                                            <option value="">Кастрирован</option>--}}
-{{--                                            <option value="">Стерилизована</option>--}}
                                         </select>
 
 {{--                                        <span class="input-group-text">Возраст</span>--}}
@@ -66,3 +60,70 @@
         </div>
     </div>
 @endsection
+
+
+<script>
+   async function getPetTypesForSelectOption() {
+    try {
+        const responsePetTypes = await fetch(
+            "http://localhost:83/client/{{$ownerId}}/getPetType", {
+        });
+
+        if (!responsePetTypes.ok) {
+            throw new Error('Network response was not ok ' + responsePetTypes.statusText);
+        }
+
+        const decodedPetTypes = await responsePetTypes.json();
+        decodedPetTypes.data.petType.forEach((type)=>{
+            insertIntoSelectOptionType(type)
+        });
+    } catch (error) {
+        console.error('Problem with your fetch operation:', error);
+    }
+   }
+
+   function insertIntoSelectOptionType(type) {
+       let row =`<option value="${type.id}">${type.title}</option>`
+       document.getElementById("typeId").innerHTML += row;
+   }
+
+   async function getBreedByTypeForSelectOption() {
+       const selectedTypeId = document.getElementById("typeId").value;
+       // console.log(selectedTypeId)
+       if (!selectedTypeId) return;
+
+       try {
+       // const responseBreedByType = await fetch("https://testdevkris.vetmanager2.ru/rest/api/breed/{selectedTypeId}", {
+           const responseBreedByType = await fetch(
+               `http://localhost:83/client/{{$ownerId}}/getBreedByType/${selectedTypeId}`, {
+       });
+           if (!responseBreedByType.ok) {
+               throw new Error('Network response was not ok ' + responseBreedByType.statusText);
+           }
+
+       const decodedBreedByType = await responseBreedByType.json();
+       decodedBreedByType.data.breed.forEach((breed)=>{
+           insertIntoSelectOptionBreedByType(breed)
+       });
+   } catch (error) {
+       console.error('Problem with your fetch operation:', error);
+   }
+   }
+
+   function insertIntoSelectOptionType(type) {
+       let row =`<option value="${type.id}">${type.title}</option>`
+       document.getElementById("typeId").innerHTML += row;
+   }
+
+   function insertIntoSelectOptionBreedByType(breed) {
+document.getElementById('breedId').removeAttribute('disabled')
+       let row =`<option value="${breed.id}">${breed.title}</option>`
+       document.getElementById("breedId").innerHTML += row;
+   }
+
+   document.addEventListener("DOMContentLoaded", function() {
+       document.getElementById("typeId").addEventListener("change", getBreedByTypeForSelectOption);
+       getPetTypesForSelectOption();
+   });
+
+</script>

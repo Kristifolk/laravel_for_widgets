@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Otis22\VetmanagerRestApi\Headers;
 use Otis22\VetmanagerRestApi\Headers\Auth\ApiKey;
@@ -26,7 +27,7 @@ class ApiRequest
     public function __construct()
     {
         $this->key = '437a544156c310367211f9faa2f4a276';
-        $this->client = new Client(['base_uri' => 'https://testdevkris.vetmanager.ru']);
+        $this->client = new Client(['base_uri' => 'https://testdevkris.vetmanager2.ru']);
 //        $this->key = $user->userSettingApi->key;
 //        $this->client = new Client(['base_uri' => $user->userSettingApi->url]);
     }
@@ -90,7 +91,23 @@ class ApiRequest
 
     public function deleteClient(int $id)
     {
-
+        try {
+            $response = $this->client->request(
+                'DELETE',
+                "/rest/api/client/$id",
+                [
+                    'headers' => $this->authHeaders()->asKeyValue(),
+                ]
+            );
+            $array = json_decode($response->getBody(), true);
+            if (!isset($array['success']) || $array['success'] === false) {
+                throw new Exception($array['message']);
+            }
+        } catch (GuzzleException $e) {
+            throw new \Exception('Guzzle error: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception('Error: ' . $e->getMessage());
+        }
     }
 
 //TODO поиск по полному ФИО
@@ -131,9 +148,25 @@ class ApiRequest
         return $this->response($url, 'pet');
     }
 
-    public function deletePet(int $ownerId)
+    public function deletePet(int $id)
     {
-
+        try {
+            $response = $this->client->request(
+                'DELETE',
+                "/rest/api/pet/$id",
+                [
+                    'headers' => $this->authHeaders()->asKeyValue(),
+                ]
+            );
+            $array = json_decode($response->getBody(), true);
+            if (!isset($array['success']) || $array['success'] === false) {
+                throw new Exception($array['message']);
+            }
+        } catch (GuzzleException $e) {
+            throw new \Exception('Guzzle error: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception('Error: ' . $e->getMessage());
+        }
     }
 
     public function createInVetmanager($nameModal, $data)
@@ -153,4 +186,37 @@ class ApiRequest
             throw new \Exception($decodeBody['message']);
         }
     }
+
+    public  function getPetType()
+    {
+        $response = $this->client->request(
+            'GET',
+            "/rest/api/PetType",
+            [
+                'headers' => $this->authHeaders()->asKeyValue(),
+            ]
+        );
+        return json_decode($response->getBody(), true);
+    }
+
+      public  function getBreedByType($selectedTypeId)
+    {
+        dd($selectedTypeId);
+            $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue('$selectedTypeId')));
+
+            $response = $this->client->request(
+                'GET',
+//            "/rest/api/breed/?filter=[{'property':'pet_type_id', 'value':'$selectedTypeId'}]",
+                "/rest/api/breed",
+                [
+                    'headers' => $this->authHeaders()->asKeyValue(),
+                    'query' => $filters->asKeyValue(),
+                ]
+            );
+            $data = json_decode($response->getBody(), true);
+
+        dd ($data);
+        return $data;
+    }
+
 }

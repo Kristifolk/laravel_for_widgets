@@ -86,9 +86,14 @@ class ClientController extends Controller
      */
     public function edit(int $id)
     {
-//        $client = ApiRequest::getClient($id);
+//        $client = Client::find($id);
+//        dd($client);
+//        if(!$client) {
+//            return redirect()->route('home')->with('error', 'Client not found');
+//        }
+
 //        return view('client.edit', compact('client'));
-        return view('client.edit');
+//        return view('client.edit', compact('$client'));
     }
 
     /**
@@ -96,7 +101,7 @@ class ClientController extends Controller
      */
     public function update(UpdateClientFormRequest $request, int $id)
     {
-//        dd('update');
+//        dd($request);
 //id?
         $client = Client::update(
             [
@@ -119,12 +124,10 @@ class ClientController extends Controller
      */
     public function destroy(int $id)
     {
-//        dd('destroy');
-//        $client = ApiRequest::deleteClient($id);
+        $delClient = (new ApiRequest())->deleteClient($id);
 //
 //        return response()->json(['success' => true]);
-        return redirect()->route('/')->with('success', 'Client deleted successfully');
-
+        return redirect()->route('home')->with('success', 'Client deleted successfully');
     }
 
     public function search(Request $request)//валидация?

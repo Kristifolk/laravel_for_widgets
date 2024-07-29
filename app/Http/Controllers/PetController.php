@@ -28,7 +28,6 @@ class PetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-//    public function store(StorePetFormRequest $request, $ownerId)
     public function store(StorePetFormRequest $request,$ownerId)
     {
 //        dd(gettype($ownerId));
@@ -37,11 +36,10 @@ class PetController extends Controller
 //            dd($request);
             (new ApiRequest())->createInVetmanager('pet', $validated);
 //            return redirect(url()->previous());
-            dd($validated);
+//            dd($validated);
 //            return redirect("client/{$validated['ownerId']}']}");
             return redirect("client/$ownerId");
         } catch (\Exception $exception) {
-            dd(1111);
             dd($exception->getMessage());
             return back()->withErrors($exception->getMessage());
         }
@@ -93,9 +91,14 @@ class PetController extends Controller
      */
     public function destroy(int $id)
     {
-        dd('destroy pet');
-//        $pet = ApiRequest::deletePet($id);
-//
-//        return response()->json(['success' => true]);
+        try {
+            $delPet = (new ApiRequest())->deletePet($id);
+            return back()->with(['success' => true, 'message' => 'Pet deleted successfully']);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()], 400);
+
+        }
+
     }
 }
