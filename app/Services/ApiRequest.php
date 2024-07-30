@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
@@ -89,6 +90,10 @@ class ApiRequest
 //        return $array['data']['client'];
 //    }
 
+    /**
+     * @throws GuzzleException
+     * @throws Exception
+     */
     public function deleteClient(int $id)
     {
         $response = $this->client->request(
@@ -143,6 +148,10 @@ class ApiRequest
         return $this->response($url, 'pet');
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws Exception
+     */
     public function deletePet(int $id)
     {
         $response = $this->client->request(
