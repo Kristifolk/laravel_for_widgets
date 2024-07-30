@@ -201,6 +201,23 @@ class ApiRequest
         }
     }
 
+    public function editClient($nameModal, $data, $id)
+    {
+        $response = $this->client->request(
+            'PUT',
+            "/rest/api/$nameModal/$id",
+            [
+                'headers' => $this->authHeaders()->asKeyValue(),
+                'json' => $data,
+            ]
+        );
+
+        $decodeBody = json_decode((string)$response->getBody(), true);
+        if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
+            throw new \Exception($decodeBody['message']);
+        }
+    }
+
     public  function getPetType()
     {
         $response = $this->client->request(

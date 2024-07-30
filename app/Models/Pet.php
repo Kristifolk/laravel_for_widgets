@@ -13,8 +13,15 @@ class Pet extends Model
         'type',
         'breed',
         'color',
-        'age',
     ];
+
+//    protected $fillable = [
+//        'owner_id',
+//        'alias',
+//        'type_id',
+//        'breed_id',
+//        'sex',
+//    ];
 
     public static function create(array $array)
     {

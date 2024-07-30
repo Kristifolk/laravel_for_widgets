@@ -40,7 +40,7 @@
                                 <th>{{ $client['first_name'] }}</th>
                                 <th>{{ $client['last_name'] }}</th>
                                 <th>{{ $client['middle_name'] }}</th>
-                                <th>{{ $client['city'] }}</th>
+                                <th>{{ $client['city_data']['title'] }}</th>
                                 <th>{{ $client['email'] }}</th>
                                 <th>{{ $client['home_phone'] }}</th>
                                 <th>

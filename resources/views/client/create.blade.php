@@ -67,9 +67,6 @@
                                         <span class="input-group-text">Пол</span>
                                         <input type="text" class="form-control" placeholder="Введите пол питомца"
                                                aria-label="Пол">
-{{--                                        <span class="input-group-text">Возраст</span>--}}
-{{--                                        <input type="text" class="form-control" placeholder="Введите возраст питомца"--}}
-{{--                                               aria-label="Возраст">--}}
                                     </div>
                                 </div>
                             </div>

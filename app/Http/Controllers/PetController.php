@@ -19,9 +19,6 @@ class PetController extends Controller
      */
     public function create(int $ownerId)
     {
-//        dd('create');
-//        dd(gettype($ownerId));
-
         return view('pet.create',  compact('ownerId'));
     }
 
@@ -34,7 +31,7 @@ class PetController extends Controller
             $validated = $request->validated();
             (new ApiRequest())->createInVetmanager('pet', $validated);
 
-            return redirect("client/$ownerId");
+            return redirect("client/$ownerId")->with('message', 'Питомец успешно создан');
         } catch (\Exception $exception) {
             return back()->withErrors($exception->getMessage());
         }
@@ -70,9 +67,10 @@ class PetController extends Controller
 
             (new ApiRequest())->editPet('pet', $validated, $id);
 
-            return redirect("client/$ownerId");
+            return redirect("client/$ownerId")->with('message', 'Питомец успешно обновлен');
         } catch (\Exception $exception) {
             return back()->withErrors($exception->getMessage());
+            //TOdo если не успешно не выводится сообщение только редирект back
         }
     }
 
@@ -83,7 +81,7 @@ class PetController extends Controller
     {
         try {
             (new ApiRequest())->deletePet($id);
-            return back()->with('message', 'Pet deleted successfully');
+            return back()->with('message', 'Питомец успешно удален');
 
         } catch (\Exception $exception) {
             return back()->with('message',  $exception->getMessage());

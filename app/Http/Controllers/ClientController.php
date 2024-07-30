@@ -27,42 +27,20 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreClientFormRequest $request)
+    public function store(StoreClientFormRequest $request)  //TOdo тест
     {
-        dd('store');
-//        $client = Client::create(
-//            [
-//                'first_name' => $request->first_name,
-//                'last_name' => $request->last_name,
-//                'middle_name' => $request->middle_name,
-//                'email' => $request->email,
-//                'city' => $request->city,
-//                'phone' => $request->phone,
-//            ]
-//        );
-//        $pets = [];
-//
-//        if ($request->has('pets')) {
-//            foreach ($request->pets as $pet) {
-//                $pet = Pet::create(
-//                    [
-//                        'client_id' => $client->id,//откуда взять
-//                        'name' => $pet['name'],
-//                        'type' => $pet['type'],
-//                        'breed' => $pet['breed'] ?? null,
-//                        'color' => $pet['color'] ?? null,
-//                        'age' => $pet['age'] ?? null,
-//                    ]
-//                );
-//                $pets[] = $pet;
-////            }
-//        }
-//
-//        return response()->json([
-//            'success' => true,
-//            'client' => $client,
-//            'pets' => $pets,
-//        ]);
+//        dd('store');
+        try {
+            $validated = $request->validated();
+            $id = $validated['$id'];
+
+            (new ApiRequest())->createInVetmanager('client', $validated);
+
+            return redirect("client/$id")->with('message', 'Клиент успешно создан');
+        } catch (\Exception $exception) {
+            return back()->withErrors($exception->getMessage());
+            //TOdo если не успешно не выводится сообщение только редирект back
+        }
     }
 
     /**
@@ -81,37 +59,30 @@ class ClientController extends Controller
      */
     public function edit(int $id)
     {
-//        $client = Client::find($id);
-//        dd($client);
-//        if(!$client) {
-//            return redirect()->route('home')->with('error', 'Client not found');
-//        }
-
-//        return view('client.edit', compact('client'));
-//        return view('client.edit', compact('$client'));
+        $oldClientInfo = (new ApiRequest())->getClient($id);
+//        dd($oldClientInfo);
+        return view('client.edit', compact('oldClientInfo'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClientFormRequest $request, int $id)
+    public function update(UpdateClientFormRequest $request, int $id)             //TOdo валидация phone, email
+
     {
 //        dd($request);
-//id?
-        $client = Client::update(
-            [
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'middle_name' => $request->middle_name,
-                'email' => $request->email,
-                'city' => $request->city,
-                'phone' => $request->phone,
-            ]
-        );
-        return response()->json([
-            'success' => true,
-            'client' => $client,
-        ]);
+//        dd($id);
+        try {
+            $validated = $request->validated();
+//        dd($validated);
+
+            (new ApiRequest())->editClient('client', $validated, $id);
+            return redirect("client/$id")->with('message', 'Клиент успешно обновлен');
+        } catch (\Exception $exception) {
+            dd(888);
+            return back()->withErrors($exception->getMessage());
+            //TOdo если не успешно не выводится сообщение только редирект back
+        }
     }
 
     /**
@@ -122,7 +93,7 @@ class ClientController extends Controller
         try {
             (new ApiRequest())->deleteClient($id);
 
-            return redirect()->route('home')->with('message', 'Client deleted successfully');
+            return redirect()->route('home')->with('message', 'Клиент успешно удален');
 //            return back()->with('message', 'Client deleted successfully');
 
         } catch (\Exception $exception) {

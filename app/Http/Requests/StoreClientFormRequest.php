@@ -25,7 +25,7 @@ class StoreClientFormRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
-            'email' => 'required|email|max:255|unique:clients,email',
+            'email' => 'nullable|email|max:255|unique:clients,email',
             'city' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'pets' => 'nullable|array',
@@ -33,7 +33,6 @@ class StoreClientFormRequest extends FormRequest
             'pets.*.type' => 'required_with:pets|string|max:255',
             'pets.*.breed' => 'nullable|string|max:255',
             'pets.*.color' => 'nullable|string|max:255',
-            'pets.*.age' => 'nullable|integer',
         ];
     }
 }
