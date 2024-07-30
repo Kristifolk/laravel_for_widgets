@@ -12,7 +12,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th>id</th>
                             <th>Имя</th>
                             <th>Фамилия</th>
                             <th>Отчество</th>

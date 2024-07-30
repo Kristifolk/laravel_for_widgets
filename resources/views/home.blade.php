@@ -1,9 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
+    @if(session('message'))
+        <div class="alert alert-success">
+            {{session('message')}}
+        </div>
+        <script>
+            setTimeout(() =>{
+                const flashMessage = document.querySelector(".alert");
+                flashMessage.remove();
+            }, 1000);
+        </script>
+    @endif
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card">
 
                     <div class="card-body">
@@ -28,7 +39,7 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">id</th>
                                 <th scope="col">Имя</th>
                                 <th scope="col">Фамилия</th>
                                 <th scope="col">Отчество</th>

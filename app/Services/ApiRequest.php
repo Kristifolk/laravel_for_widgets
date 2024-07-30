@@ -60,10 +60,10 @@ class ApiRequest
         return $array['data'][$nameModal];
     }
 
-    public function getAll(string $nameModal, string $url = '/rest/api/')
+    public function getAllClients()
     {
-        $url = $url . $nameModal;
-        return $this->response($url, $nameModal);
+        $url = "/rest/api/client/?filter=[{'property':'status', 'value':'ACTIVE'}]";
+        return $this->response($url, 'client');
     }
 
     /**
@@ -91,22 +91,17 @@ class ApiRequest
 
     public function deleteClient(int $id)
     {
-        try {
-            $response = $this->client->request(
-                'DELETE',
-                "/rest/api/client/$id",
-                [
-                    'headers' => $this->authHeaders()->asKeyValue(),
-                ]
-            );
-            $array = json_decode($response->getBody(), true);
-            if (!isset($array['success']) || $array['success'] === false) {
-                throw new Exception($array['message']);
-            }
-        } catch (GuzzleException $e) {
-            throw new \Exception('Guzzle error: ' . $e->getMessage());
-        } catch (\Exception $e) {
-            throw new \Exception('Error: ' . $e->getMessage());
+        $response = $this->client->request(
+            'DELETE',
+            "/rest/api/client/$id",
+            [
+                'headers' => $this->authHeaders()->asKeyValue(),
+            ]
+        );
+        $array = json_decode($response->getBody(), true);
+
+        if (!isset($array['success']) || $array['success'] === false) {
+            throw new Exception($array['message']);
         }
     }
 
@@ -150,22 +145,17 @@ class ApiRequest
 
     public function deletePet(int $id)
     {
-        try {
-            $response = $this->client->request(
-                'DELETE',
-                "/rest/api/pet/$id",
-                [
-                    'headers' => $this->authHeaders()->asKeyValue(),
-                ]
-            );
-            $array = json_decode($response->getBody(), true);
-            if (!isset($array['success']) || $array['success'] === false) {
-                throw new Exception($array['message']);
-            }
-        } catch (GuzzleException $e) {
-            throw new \Exception('Guzzle error: ' . $e->getMessage());
-        } catch (\Exception $e) {
-            throw new \Exception('Error: ' . $e->getMessage());
+        $response = $this->client->request(
+            'DELETE',
+            "/rest/api/pet/$id",
+            [
+                'headers' => $this->authHeaders()->asKeyValue(),
+            ]
+        );
+        $array = json_decode($response->getBody(), true);
+
+        if (!isset($array['success']) || $array['success'] === false) {
+            throw new Exception($array['message']);
         }
     }
 

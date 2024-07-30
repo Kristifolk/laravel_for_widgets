@@ -1,7 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+    @if(session('message'))
+        <div class="alert alert-success">
+            {{session('message')}}
+        </div>
+        <script>
+            setTimeout(() =>{
+                const flashMessage = document.querySelector(".alert");
+                flashMessage.remove();
+            }, 1000);
+        </script>
+    @endif
+    <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">

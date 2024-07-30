@@ -13,8 +13,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-//        dd('index');
-//        return view('home');
+        //
     }
 
     /**
@@ -71,12 +70,8 @@ class ClientController extends Controller
      */
     public function show(string $ownerId)
     {
-//        dd($ownerId);
-//        dd(gettype($ownerId));
-//        $client = (new ApiRequest)->getClient($ownerId);
+        $client = (new ApiRequest())->getClient($ownerId);
         $pets =  (new ApiRequest)->getAllPetsClient($ownerId);
-        $client = $pets[0]['owner'];
-//        dd($pets);
 
         return view('client.show', compact('client', 'pets'));
     }
@@ -124,10 +119,15 @@ class ClientController extends Controller
      */
     public function destroy(int $id)
     {
-        $delClient = (new ApiRequest())->deleteClient($id);
-//
-//        return response()->json(['success' => true]);
-        return redirect()->route('home')->with('success', 'Client deleted successfully');
+        try {
+            (new ApiRequest())->deleteClient($id);
+
+            return redirect()->route('home')->with('message', 'Client deleted successfully');
+//            return back()->with('message', 'Client deleted successfully');
+
+        } catch (\Exception $exception) {
+            return back()->with('message',  $exception->getMessage());
+        }
     }
 
     public function search(Request $request)//валидация?

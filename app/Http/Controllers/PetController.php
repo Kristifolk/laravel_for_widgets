@@ -87,13 +87,11 @@ class PetController extends Controller
     public function destroy(int $id)
     {
         try {
-            $delPet = (new ApiRequest())->deletePet($id);
-            return back()->with(['success' => true, 'message' => 'Pet deleted successfully']);
+            (new ApiRequest())->deletePet($id);
+            return back()->with('message', 'Pet deleted successfully');
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()], 400);
-
+            return back()->with('message',  $exception->getMessage());
         }
-
     }
 }
