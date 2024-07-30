@@ -179,8 +179,23 @@ class ApiRequest
             ]
         );
         $decodeBody = json_decode((string)$response->getBody(), true);
-//        dd($decodeBody);
-//        dd($decodeBody['message']);
+        if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
+            throw new \Exception($decodeBody['message']);
+        }
+    }
+
+    public function editPet($nameModal, $data, $id)
+    {
+        $response = $this->client->request(
+            'PUT',
+            "/rest/api/$nameModal/$id",
+            [
+                'headers' => $this->authHeaders()->asKeyValue(),
+                'json' => $data,
+            ]
+        );
+
+        $decodeBody = json_decode((string)$response->getBody(), true);
         if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
             throw new \Exception($decodeBody['message']);
         }

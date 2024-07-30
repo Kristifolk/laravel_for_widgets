@@ -46,7 +46,7 @@ class PetController extends Controller
     public function show(int $id)
     {
         $pet = (new ApiRequest())->getPet($id);
-        dd($pet);
+//        dd($pet);
         return view('pet.show', compact('pet'));
     }
 
@@ -55,30 +55,25 @@ class PetController extends Controller
      */
     public function edit(int $id)
     {
-        return view('pet.edit');
+        $oldPetInfo = (new ApiRequest())->getPet($id);
+        return view('pet.edit', compact('oldPetInfo'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(StorePetFormRequest $request, int $id)
     {
-//        dd('update pet');
+        try {
+            $validated = $request->validated();
+            $ownerId = $validated['owner_id'];
 
-        $pet = Pet::update(
-            [
-                'client_id' => $request->client->id,
-                'name' => $request->pet['name'],
-                'type' => $request->pet['type'],
-                'breed' => $request->pet['breed'] ?? null,
-                'color' => $request->pet['color'] ?? null,
-                'age' => $request->pet['age'] ?? null,
-            ]
-        );
-        return response()->json([
-            'success' => true,
-            '$pet' => $pet,
-        ]);
+            (new ApiRequest())->editPet('pet', $validated, $id);
+
+            return redirect("client/$ownerId");
+        } catch (\Exception $exception) {
+            return back()->withErrors($exception->getMessage());
+        }
     }
 
     /**
