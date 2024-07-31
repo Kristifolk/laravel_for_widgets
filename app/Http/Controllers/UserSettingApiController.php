@@ -57,7 +57,8 @@ class UserSettingApiController extends Controller
      */
     public function edit(string $id)
     {
-        return view('settingsApi.edit');
+        $oldSettings = UserSettingApi::where('user_id', Auth::user()->id)->first();
+        return view('settingsApi.edit', compact('oldSettings'));
     }
 
     /**

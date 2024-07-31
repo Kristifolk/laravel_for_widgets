@@ -7,18 +7,18 @@
             <div class="card">
 
                 <div class="card-body">
-                    <h3 class="text-primary">Add API</h3>
+                    <h3 class="text-primary">Редактировать настройки API</h3>
                     <form method="POST" action="{{ route('settingsApi.update', Auth::user()->id) }}" >
                         @method('PUT')
                         @csrf
                         <div class="mb-3">
                             <label  class="form-label">Url</label>
-                            <input type="url" name="url" class="form-control" placeholder="https://ya.ru/">
+                            <input type="url" name="url" class="form-control" placeholder="https://ya.ru/" value="{{$oldSettings->url }}">
                         </div>
 
                         <div class="mb-3">
                             <label  class="form-label">Api Key</label>
-                            <input type="text" name="api_key"  class="form-control">
+                            <input type="text" name="api_key"  class="form-control" value="{{$oldSettings->api_key }}">
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
