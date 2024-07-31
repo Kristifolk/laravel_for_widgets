@@ -76,7 +76,21 @@
                                 <th>{{ $pet['alias'] }}</th>
                                 <th>{{ $pet['type']['title'] }}</th>
                                 <th>{{ $pet['breed']['title'] }}</th>
-                                <th>{{ $pet['sex'] }}</th>
+                                <th>
+                                    @switch($pet['sex'])
+                                        @case('unknown')
+                                            Не известен
+                                            @break
+                                        @case('male')
+                                            Самец
+                                            @break
+                                        @case('female')
+                                            Самка
+                                            @break
+                                        @default
+                                            Не указано
+                                    @endswitch
+                                </th>
                                 <th>
                                     <a class="btn btn-primary me-md-2"
                                        href="{{ route('pet.show', $pet['id']) }}">Просмотреть</a>
