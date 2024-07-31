@@ -9,7 +9,7 @@ class Pet extends Model
 {
     protected $fillable = [
         'client_id',
-        'name',
+        'alias',
         'type',
         'breed',
         'color',
