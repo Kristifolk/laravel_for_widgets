@@ -79,10 +79,7 @@ class UserSettingApiController extends Controller
      */
     public function destroy(string $id)
     {
-
-   UserSettingApi::where('user_id', $id)->delete();
-
+        UserSettingApi::where('user_id', $id)->delete();
         return redirect()->route('settingsApi.index');
-
     }
 }

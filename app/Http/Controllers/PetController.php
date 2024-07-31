@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePetFormRequest;
 use App\Services\ApiRequest;
-use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
     public function index($ownerId)
     {
-//
+        //
     }
 
     /**

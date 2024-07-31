@@ -17,7 +17,6 @@ class CheckApiSettings
      */
     public function handle(Request $request, Closure $next): Response
     {
-//        $user = $request->user();
         $user = Auth::user();
         if (!$user || !UserSettingApi::doesTheUserHaveApiSettings($user)){
             return redirect('/settingsApi');

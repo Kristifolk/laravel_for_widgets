@@ -32,13 +32,3 @@ Route::get('client/{client}/pet/create', [PetController::class, 'create'])->name
 Route::get('client/{client}/getPetType', [\App\Services\ApiRequest::class, 'getPetType'])->name('getPetType');
 Route::get('client/{client}/getBreedByType/{selectedTypeId}', [\App\Services\ApiRequest::class, 'getBreedByType'])->name('getBreedByType');
 Route::post('client/{client}/pet/store', [PetController::class, 'store'])->name('pet.store');
-
-
-
-//Route::resource('clients', ClientController::class);
-//Route::resource('pets', PetController::class);
-
-//Route::resource([
-//    'clients' => ClientController::class,
-//    'pets' => PetController::class,
-//    ]);
