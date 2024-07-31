@@ -69,7 +69,7 @@
                         <span class="input-group-text">Город</span>
                         <input type="text" class="form-control" placeholder="Введите город клиента"
                                aria-label="Город" name="city"
-                               value={{ $oldClientInfo['city_data']['title'] }}>
+                               value={{ $oldClientInfo['city'] }}>
                         <span class="input-group-text">Телефон</span>
                         <input type="text" class="form-control" placeholder="Введите телефон клиента"
                                aria-label="Телефон" name="home_phone"
