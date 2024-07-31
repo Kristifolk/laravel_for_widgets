@@ -29,7 +29,7 @@ class ClientController extends Controller
      */
     public function store(StoreClientFormRequest $request)  //TOdo тест
     {
-//        dd('store');
+        dd('$request');
         try {
             $validated = $request->validated();
             $id = $validated['$id'];
@@ -60,26 +60,21 @@ class ClientController extends Controller
     public function edit(int $id)
     {
         $oldClientInfo = (new ApiRequest())->getClient($id);
-//        dd($oldClientInfo);
         return view('client.edit', compact('oldClientInfo'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClientFormRequest $request, int $id)             //TOdo валидация phone, email
-
+    public function update(UpdateClientFormRequest $request, int $id)
     {
-//        dd($request);
-//        dd($id);
         try {
             $validated = $request->validated();
-//        dd($validated);
-
             (new ApiRequest())->editClient('client', $validated, $id);
+
             return redirect("client/$id")->with('message', 'Клиент успешно обновлен');
         } catch (\Exception $exception) {
-            dd(888);
+            dd($exception->getMessage());
             return back()->withErrors($exception->getMessage());
             //TOdo если не успешно не выводится сообщение только редирект back
         }
@@ -101,10 +96,10 @@ class ClientController extends Controller
         }
     }
 
-    public function search(Request $request)//валидация?
+    public function search(Request $request)//TOdo валидация?
     {
         $lastname = $request->input('last_name');
-//        $firstname = $request->input('first_name');
+//        $firstname = $request->input('first_name');//TOdo поиск по ФИО,а не только фамилии?
 //        $middlename = $request->input('middle_name');
 //        $foundClients = (new ApiRequest())->searchClients($lastname, $firstname, $middlename);
 

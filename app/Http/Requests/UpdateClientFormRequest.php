@@ -25,11 +25,9 @@ class UpdateClientFormRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
-//            'email' => 'nullable|email|max:255|unique:clients,email',//TOdo не проходит валидацию
+            'email' => 'nullable|email|max:255',
             'city' => 'nullable|string|max:255',
-//            'phone' => 'nullable|string|max:255',//TOdo не проходит валидацию
-//            'phone' => 'nullable|integer|max:255',
-//            'phone' => 'nullable|max:255',
+            'home_phone' => 'nullable|string|max:255',
         ];
     }
 }

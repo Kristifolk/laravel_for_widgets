@@ -13,7 +13,6 @@ class Client extends Model
         'middle_name',
         'email',
         'city',
-        'phone',
-        'pet_name',
+        'home_phone',
     ];
 }
