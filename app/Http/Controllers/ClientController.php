@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreClientFormRequest;
-use App\Http\Requests\UpdateClientFormRequest;
-use App\Models\Pet;
-use App\Models\Client;
+use App\Http\Requests\StoreUpdateClientFormRequest;
 use App\Services\ApiRequest;
 use Illuminate\Http\Request;
 
@@ -27,19 +25,20 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreClientFormRequest $request)  //TOdo тест
+    public function store(StoreUpdateClientFormRequest $request)  //TOdo тест id client id pet создаются с шагом 2, id 50, id 52..
     {
-        dd('$request');
         try {
             $validated = $request->validated();
-            $id = $validated['$id'];
+            $decodeBodyResponse = (new ApiRequest())->createInVetmanager('client', $validated);
 
-            (new ApiRequest())->createInVetmanager('client', $validated);
+            if (!isset ($decodeBodyResponse) || !isset($decodeBodyResponse['data']['client'][0]['id'])) {
+                return back()->withErrors('Ошибка создания клиента');
+            }
+            $id = $decodeBodyResponse['data']['client'][0]['id'];
 
             return redirect("client/$id")->with('message', 'Клиент успешно создан');
         } catch (\Exception $exception) {
             return back()->withErrors($exception->getMessage());
-            //TOdo если не успешно не выводится сообщение только редирект back
         }
     }
 
@@ -66,7 +65,7 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClientFormRequest $request, int $id)
+    public function update(StoreUpdateClientFormRequest $request, int $id)
     {
         try {
             $validated = $request->validated();
@@ -74,9 +73,7 @@ class ClientController extends Controller
 
             return redirect("client/$id")->with('message', 'Клиент успешно обновлен');
         } catch (\Exception $exception) {
-            dd($exception->getMessage());
             return back()->withErrors($exception->getMessage());
-            //TOdo если не успешно не выводится сообщение только редирект back
         }
     }
 

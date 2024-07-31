@@ -179,9 +179,11 @@ class ApiRequest
             ]
         );
         $decodeBody = json_decode((string)$response->getBody(), true);
+
         if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
             throw new \Exception($decodeBody['message']);
         }
+        return $decodeBody;
     }
 
     public function editPet($nameModal, $data, $id)

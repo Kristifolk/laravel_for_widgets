@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePetFormRequest;
-use App\Models\Pet;
 use App\Services\ApiRequest;
 use Illuminate\Http\Request;
 
@@ -29,7 +28,11 @@ class PetController extends Controller
     {
         try {
             $validated = $request->validated();
-            (new ApiRequest())->createInVetmanager('pet', $validated);
+            $decodeBodyResponse = (new ApiRequest())->createInVetmanager('pet', $validated);
+
+            if (!isset($decodeBodyResponse)) {
+                return back()->withErrors('Ошибка создания питомца');
+            }
 
             return redirect("client/$ownerId")->with('message', 'Питомец успешно создан');
         } catch (\Exception $exception) {
@@ -43,7 +46,6 @@ class PetController extends Controller
     public function show(int $id)
     {
         $pet = (new ApiRequest())->getPet($id);
-//        dd($pet);
         return view('pet.show', compact('pet'));
     }
 
@@ -70,7 +72,6 @@ class PetController extends Controller
             return redirect("client/$ownerId")->with('message', 'Питомец успешно обновлен');
         } catch (\Exception $exception) {
             return back()->withErrors($exception->getMessage());
-            //TOdo если не успешно не выводится сообщение только редирект back
         }
     }
 
