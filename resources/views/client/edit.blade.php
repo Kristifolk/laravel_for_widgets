@@ -1,36 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-{{--    Отображение сообщений об ошибках--}}
-{{--    @if ($errors->any())--}}
-{{--        <div class="alert alert-danger">--}}
-{{--            <ul>--}}
-{{--                @foreach ($errors->all() as $error)--}}
-{{--                    <li>{{ $error }}</li>--}}
-{{--                @endforeach--}}
-{{--            </ul>--}}
-{{--        </div>--}}
-{{--    @endif--}}
-
-    @if(session('message'))
-        <div class="alert alert-success">
-            {{session('message')}}
-        </div>
-        <script>
-            setTimeout(() =>{
-                const flashMessage = document.querySelector(".alert");
-                flashMessage.remove();
-            }, 1000);
-        </script>
-    @endif
-
-    <div class="container">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
 
                 <div class="card-body">
-                <form action="{{ route('client.update', $oldClientInfo['id']) }}" method="POST"
+                    <form action="{{ route('client.update', $oldClientInfo['id']) }}" method="POST"
                       onsubmit="return confirm('Проверьте правильность внесенных данных клиента');">
                     @csrf
                     @method('PUT')
@@ -79,6 +56,8 @@
                     <button  type="submit" class="btn btn-primary me-md-2">Сохранить</button>
                     </div>
                 </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

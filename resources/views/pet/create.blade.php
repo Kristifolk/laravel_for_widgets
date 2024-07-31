@@ -1,65 +1,65 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="{{ route('pet.store', $ownerId) }}" method="POST"
-                              onsubmit="return validateAndConfirm();">
-                            @csrf
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('pet.store', $ownerId) }}" method="POST"
+                          onsubmit="return validateAndConfirm();">
+                        @csrf
 
-                            <input type="hidden" name="owner_id" value="{{ $ownerId }}">
+                        <input type="hidden" name="owner_id" value="{{ $ownerId }}">
 
-                            <label for="basic-url" class="text-primary">Питомец</label>
-                            <div id="pet-fields-container">
-                                <div class="pet-fields">
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1">Кличка</span>
-                                        <input type="text" class="form-control" placeholder="Введите кличку"
-                                               aria-label="Кличка" aria-describedby="basic-addon1"
-                                               name="alias" required>
-                                    </div>
+                        <label for="basic-url" class="text-primary">Питомец</label>
+                        <div id="pet-fields-container">
+                            <div class="pet-fields">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">Кличка</span>
+                                    <input type="text" class="form-control" placeholder="Введите кличку"
+                                           aria-label="Кличка" aria-describedby="basic-addon1"
+                                           name="alias" required>
+                                </div>
 
-                                    <span id="typeId-error" class="text-danger"></span>
-                                    <span id="breedId-error" class="text-danger"></span>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text">Вид</span>
-                                        <select class="form-select" aria-label="Default select example"
-                                                name="type_id" id="typeId">
-                                            <option selected>Выберите вид...</option>
+                                <span id="typeId-error" class="text-danger"></span>
+                                <span id="breedId-error" class="text-danger"></span>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Вид</span>
+                                    <select class="form-select" aria-label="Default select example"
+                                            name="type_id" id="typeId">
+                                        <option selected>Выберите вид...</option>
 
-                                        </select>
+                                    </select>
 
-                                        <span class="input-group-text">Порода</span>
-                                        <select class="form-select" aria-label="Default select example"
-                                                id="breedId" name="breed_id"
-                                                disabled="disabled">
+                                    <span class="input-group-text">Порода</span>
+                                    <select class="form-select" aria-label="Default select example"
+                                            id="breedId" name="breed_id"
+                                            disabled="disabled">
 
-                                        </select>
-                                    </div>
+                                    </select>
+                                </div>
 
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text">Пол</span>
-                                        <select class="form-select" aria-label="Default select example" name="sex">
-                                            <option value="unknown">Не известен</option>
-                                            <option value="male">Самец</option>
-                                            <option value="female">Самка</option>
-                                        </select>
-                                    </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Пол</span>
+                                    <select class="form-select" aria-label="Default select example" name="sex">
+                                        <option value="unknown">Не известен</option>
+                                        <option value="male">Самец</option>
+                                        <option value="female">Самка</option>
+                                    </select>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="submit" class="btn btn-primary me-md-2">Сохранить</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary me-md-2">Сохранить</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 <script>

@@ -75,6 +75,30 @@
                 </div>
             </div>
         </nav>
+        <div class="for-alert">
+            {{--  Отображение успешных сообщений --}}
+        @if(session('message'))
+                <div class="alert alert-success">
+                    {{session('message')}}
+                </div>
+                <script>
+                    setTimeout(() =>{
+                        const flashMessage = document.querySelector(".alert");
+                        flashMessage.remove();
+                    }, 1000);
+                </script>
+            @endif
+            {{--  Отображение сообщений об ошибках--}}
+        @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
 
         <main class="py-4">
             @yield('content')

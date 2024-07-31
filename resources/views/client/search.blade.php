@@ -26,7 +26,7 @@
                         @foreach($foundClients as $client)
                             <tr>
 {{--TODO корректная нумерация # клиентов --}}
-                            <th>#</th>
+                            <th>{{ $client['id'] }}</th>
                             <th>{{ $client['first_name'] }}</th>
                             <th>{{ $client['last_name'] }}</th>
                             <th>{{ $client['middle_name'] }}</th>
@@ -41,6 +41,7 @@
                         </tbody>
                     </table>
                     {{-- Таблица Клиент END --}}
+                </div>
             </div>
         </div>
     </div>
