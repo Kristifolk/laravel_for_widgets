@@ -7,7 +7,8 @@
             <div class="card">
 
                 <div class="card-body">
-                <form action="{{ route('pet.update', $oldPetInfo['id']) }}" method="POST" onsubmit="return confirm('Проверьте правильность внесенных данных питомца');">
+                <form action="{{ route('pet.update', $oldPetInfo['id']) }}" method="POST"
+                      onsubmit="return validateAndConfirm();">
                     @csrf
                     @method('PUT')
 
@@ -17,20 +18,24 @@
 
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Кличка</span>
-                        <input type="text" class="form-control" placeholder="Введите кличку питомца" aria-label="Кличка" aria-describedby="basic-addon1" name="alias"  value={{ $oldPetInfo['alias'] }}>
+                        <input type="text" class="form-control" placeholder="Введите кличку питомца"
+                               aria-label="Кличка" aria-describedby="basic-addon1" name="alias"
+                               value={{ $oldPetInfo['alias'] }} required>
                     </div>
 
+                    <span id="typeId-error" class="text-danger"></span>
+                    <span id="breedId-error" class="text-danger"></span>
                     <div class="input-group mb-3">
                         <span class="input-group-text">Вид</span>
                         <select class="form-select" aria-label="Default select example" name="type_id" id="typeId">
                             <option value={{ $oldPetInfo['type_id'] }}>{{ $oldPetInfo['type']['title'] }}</option>
 
                         </select>
+
                         <span class="input-group-text">Порода</span>
                         <select class="form-select" aria-label="Default select example"
                                 id="breedId" name="breed_id">
                             <option value={{ $oldPetInfo['breed_id'] }}>{{ $oldPetInfo['breed']['title'] }}</option>
-
 
                         </select>
                     </div>
@@ -57,6 +62,33 @@
 
 
 <script>
+    function validateAndConfirm() {
+        if(!validateForm()) {
+            return false;
+        }
+
+        return confirm('Проверьте правильность внесенных данных питомца');
+    }
+
+    function validateForm() {
+        let selectedTypeId = document.getElementById("typeId").value;
+        let typeIdError = document.getElementById('typeId-error');
+        let selectedBreedId = document.getElementById("breedId").value;
+        let breedIdError = document.getElementById('breedId-error');
+
+        if (selectedTypeId === 'Выберите вид...' || selectedTypeId === '') {
+            typeIdError.textContent = 'Пожалуйста, выберите вид питомца';
+            return false;
+        }
+
+        if (!selectedBreedId) {
+            breedIdError.textContent = 'Пожалуйста, выберите породу питомца';
+            return false;
+        }
+
+        return true;
+    }
+
     async function getPetTypesForSelectOption() {
         try {
             const responsePetTypes = await fetch(

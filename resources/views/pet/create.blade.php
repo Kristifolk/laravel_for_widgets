@@ -7,8 +7,9 @@
                 <div class="card">
                     <div class="card-body">
                         <form action="{{ route('pet.store', $ownerId) }}" method="POST"
-                              onsubmit="return confirm('Проверьте правильность внесенных данных питомца');">
+                              onsubmit="return validateAndConfirm();">
                             @csrf
+
                             <input type="hidden" name="owner_id" value="{{ $ownerId }}">
 
                             <label for="basic-url" class="text-primary">Питомец</label>
@@ -17,11 +18,16 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">Кличка</span>
                                         <input type="text" class="form-control" placeholder="Введите кличку"
-                                               aria-label="Кличка" aria-describedby="basic-addon1" name="alias" required>
+                                               aria-label="Кличка" aria-describedby="basic-addon1"
+                                               name="alias" required>
                                     </div>
+
+                                    <span id="typeId-error" class="text-danger"></span>
+                                    <span id="breedId-error" class="text-danger"></span>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">Вид</span>
-                                        <select class="form-select" aria-label="Default select example" name="type_id" id="typeId">
+                                        <select class="form-select" aria-label="Default select example"
+                                                name="type_id" id="typeId">
                                             <option selected>Выберите вид...</option>
 
                                         </select>
@@ -56,9 +62,35 @@
     </div>
 @endsection
 
-
 <script>
-   async function getPetTypesForSelectOption() {
+    function validateAndConfirm() {
+        if(!validateForm()) {
+            return false;
+        }
+
+        return confirm('Проверьте правильность внесенных данных питомца');
+    }
+
+    function validateForm() {
+        let selectedTypeId = document.getElementById("typeId").value;
+        let typeIdError = document.getElementById('typeId-error');
+        let selectedBreedId = document.getElementById("breedId").value;
+        let breedIdError = document.getElementById('breedId-error');
+
+        if (selectedTypeId === 'Выберите вид...' || selectedTypeId === '') {
+            typeIdError.textContent = 'Пожалуйста, выберите вид питомца';
+            return false;
+        }
+
+        if (!selectedBreedId) {
+            breedIdError.textContent = 'Пожалуйста, выберите породу питомца';
+            return false;
+        }
+
+        return true;
+    }
+
+    async function getPetTypesForSelectOption() {
     try {
         const responsePetTypes = await fetch(
             "http://localhost:83/client/{{$ownerId}}/getPetType", {
