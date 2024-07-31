@@ -7,7 +7,7 @@
             <div class="card">
 
                 <div class="card-body">
-                    <h3>Add API</h3>
+                    <h3 class="text-primary">Add API</h3>
                     <form method="POST" action="{{ route('settingsApi.update', Auth::user()->id) }}" >
                         @method('PUT')
                         @csrf

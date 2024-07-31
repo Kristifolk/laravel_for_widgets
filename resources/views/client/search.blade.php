@@ -8,7 +8,7 @@
 
                 <div class="card-body">
                     {{-- Таблица Клиент START --}}
-                    <h2>{{ $searchInfoMessage }}</h2>
+                    <h2 class="text-primary">{{ $searchInfoMessage }}</h2>
                     <table class="table table-hover">
                         <thead>
                         <tr>

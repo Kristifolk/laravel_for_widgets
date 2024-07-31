@@ -24,7 +24,7 @@
                         <a class="btn btn-primary me-md-2" href="{{ route('client.create') }}">Добавить клиента</a>
                     </div>
                     {{-- Таблица START --}}
-                    <h3>Клиенты ветменеджера (лимит 50)</h3>
+                    <h3 class="text-primary">Клиенты ветменеджера (лимит 50)</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr>

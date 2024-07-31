@@ -9,7 +9,7 @@
                 <div class="card-body">
 
                     {{-- Таблица Клиент START --}}
-                    <h3>Клиент</h3>
+                    <h3 class="text-primary">Клиент</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="card-body">
                     {{-- Таблица Питомцы START --}}
-                    <h3>Питомец клиента</h3>
+                    <h3 class="text-primary">Питомец клиента</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr>

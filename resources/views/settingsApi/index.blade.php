@@ -24,7 +24,7 @@
                         </div>
                     @endif
 
-                    <h3>Настройки API</h3>
+                    <h3 class="text-primary">Настройки API</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr>

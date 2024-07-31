@@ -8,7 +8,7 @@
 
                 <div class="card-body">
                     {{-- Таблица Клиент START --}}
-                    <h3>Клиент ветменеджера</h3>
+                    <h3 class="text-primary">Клиент ветменеджера</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="card-body">
                     {{-- Таблица Питомцы START --}}
-                    <h3>Питомцы клиента</h3>
+                    <h3 class="text-primary">Питомцы клиента</h3>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a class="btn btn-primary me-md-2" href="{{ route('pet.create', $client['id']) }}">Добавить
                             питомца</a>

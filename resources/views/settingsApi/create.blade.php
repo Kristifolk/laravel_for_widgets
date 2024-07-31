@@ -7,7 +7,7 @@
             <div class="card">
 
                 <div class="card-body">
-                    <h3>Add API</h3>
+                    <h3 class="text-primary">Add API</h3>
                     <form action="{{ route('settingsApi.store') }}" method="post">
                         @csrf
                         <div class="mb-3">
