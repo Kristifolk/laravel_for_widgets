@@ -103,24 +103,16 @@ class ApiRequest
      */
     public function searchClients(string $lastname)
     {
-        $foundClients['data']['client'] = [];
+        $array['data']['client'] = [];
 
         if(!empty($lastname)) {
             $filters = new Filters(new EqualTo(new Property('last_name'), new StringValue($lastname)));
-
-            $response = $this->client->request(
-                'GET',
-                '/rest/api/client',
-                [
-                    'headers' => $this->authHeaders()->asKeyValue(),
-                    'query' => $filters->asKeyValue()
-                ]
-            );
-
-            $foundClients = json_decode($response->getBody(), true);
+            $url = "/rest/api/client";
+            $query = $filters->asKeyValue();
+            $array = $this->response('GET', $url, $query);
         }
 
-        return $foundClients['data']['client'];
+        return $array['data']['client'];
     }
 
     /**
