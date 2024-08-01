@@ -66,7 +66,7 @@ class PetController extends Controller
             $validated = $request->validated();
             $ownerId = $validated['owner_id'];
 
-            (new ApiRequest())->editPet('pet', $validated, $id);
+            (new ApiRequest())->edit('pet', $validated, $id);
 
             return redirect("client/$ownerId")->with('message', 'Питомец успешно обновлен');
         } catch (\Exception $exception) {
@@ -80,7 +80,7 @@ class PetController extends Controller
     public function destroy(int $id)
     {
         try {
-            (new ApiRequest())->deletePet($id);
+            (new ApiRequest())->delete('pet', $id);
             return back()->with('message', 'Питомец успешно удален');
 
         } catch (\Exception $exception) {

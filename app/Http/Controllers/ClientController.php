@@ -69,7 +69,7 @@ class ClientController extends Controller
     {
         try {
             $validated = $request->validated();
-            (new ApiRequest())->editClient('client', $validated, $id);
+            (new ApiRequest())->edit('client', $validated, $id);
 
             return redirect("client/$id")->with('message', 'Клиент успешно обновлен');
         } catch (\Exception $exception) {
@@ -83,7 +83,7 @@ class ClientController extends Controller
     public function destroy(int $id)
     {
         try {
-            (new ApiRequest())->deleteClient($id);
+            (new ApiRequest())->delete('client', $id);
 
             return redirect()->route('home')->with('message', 'Клиент успешно удален');
 //            return back()->with('message', 'Client deleted successfully');

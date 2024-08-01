@@ -2,40 +2,36 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Models\UserSettingApi;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Otis22\VetmanagerRestApi\Headers;
 use Otis22\VetmanagerRestApi\Headers\Auth\ApiKey;
 use Otis22\VetmanagerRestApi\Query\Filter\EqualTo;
 use Otis22\VetmanagerRestApi\Query\Filter\Value\StringValue;
 use Otis22\VetmanagerRestApi\Query\Filters;
-use Otis22\VetmanagerRestApi\Query\PagedQuery;
-use Otis22\VetmanagerRestApi\Query\Sort\AscBy;
-use Otis22\VetmanagerRestApi\Query\Sorts;
 use Otis22\VetmanagerRestApi\Model\Property;
-use Otis22\VetmanagerRestApi\Query\Query;
-
-
 
 class ApiRequest
 {
     private Client $client;
     private $key;
-//    public function __construct(User $user, $model)
+
     public function __construct()
     {
-        $this->key = '437a544156c310367211f9faa2f4a276';
-        $this->client = new Client(['base_uri' => 'https://testdevkris.vetmanager2.ru']);
-//        $this->key = $user->userSettingApi->key;
-//        $this->client = new Client(['base_uri' => $user->userSettingApi->url]);
+        $this->key = $this->getUserSettings()->api_key;
+        $this->client = new Client([
+            'base_uri' => $this->getUserSettings()->url,
+        ]);
     }
-//    public function request($method, $url, $data)
-//    {
-//
-//    }
+
+    private function getUserSettings()
+    {
+        return UserSettingApi::where('user_id', Auth::user()->id)->first();
+    }
+
     private function authHeaders(): Headers\WithAuth
     {
         return new Headers\WithAuth(
@@ -45,7 +41,10 @@ class ApiRequest
         );
     }
 
-    private function response($url, $nameModal)
+    /**
+     * @throws GuzzleException
+     */
+    private function response(string $url, string $nameModal)
     {
         $response = $this->client->request(
             'GET',
@@ -75,46 +74,13 @@ class ApiRequest
         return $this->response($url, 'client');
     }
 
-//    public function getClient(int $id)
-//    {
-//        $response = $this->client->request(
-//            'GET',
-//            "/rest/api/client/$id",
-//            [
-//                'headers' => $this->authHeaders()->asKeyValue(),
-//            ]
-//        );
-//
-//        $array = json_decode($response->getBody(), true);
-//
-//        return $array['data']['client'];
-//    }
 
-    /**
-     * @throws GuzzleException
-     * @throws Exception
-     */
-    public function deleteClient(int $id)
-    {
-        $response = $this->client->request(
-            'DELETE',
-            "/rest/api/client/$id",
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-            ]
-        );
-        $array = json_decode($response->getBody(), true);
-
-        if (!isset($array['success']) || $array['success'] === false) {
-            throw new Exception($array['message']);
-        }
-    }
 
 //TODO поиск по полному ФИО
     /**
      *Поиск по Фамилии по всем клиентам Ветменеджер, не только для первых 50 шт
      */
-    public function searchClients($lastname)
+    public function searchClients(string $lastname)
     {
         $foundClients['data']['client'] = [];
 
@@ -136,7 +102,7 @@ class ApiRequest
         return $foundClients['data']['client'];
     }
 
-    public function getAllPetsClient($ownerId)
+    public function getAllPetsClient(string $ownerId)
     {
         $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$ownerId'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
         return $this->response($url, 'pet');
@@ -152,15 +118,16 @@ class ApiRequest
      * @throws GuzzleException
      * @throws Exception
      */
-    public function deletePet(int $id)
+    public function delete(string $nameModal, int $id)
     {
         $response = $this->client->request(
             'DELETE',
-            "/rest/api/pet/$id",
+            "/rest/api/$nameModal/$id",
             [
                 'headers' => $this->authHeaders()->asKeyValue(),
             ]
         );
+
         $array = json_decode($response->getBody(), true);
 
         if (!isset($array['success']) || $array['success'] === false) {
@@ -168,7 +135,7 @@ class ApiRequest
         }
     }
 
-    public function createInVetmanager($nameModal, $data)
+    public function createInVetmanager(string $nameModal, array $data)
     {
         $response = $this->client->request(
             'POST',
@@ -186,24 +153,7 @@ class ApiRequest
         return $decodeBody;
     }
 
-    public function editPet($nameModal, $data, $id)
-    {
-        $response = $this->client->request(
-            'PUT',
-            "/rest/api/$nameModal/$id",
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-                'json' => $data,
-            ]
-        );
-
-        $decodeBody = json_decode((string)$response->getBody(), true);
-        if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
-            throw new \Exception($decodeBody['message']);
-        }
-    }
-
-    public function editClient($nameModal, $data, $id)
+    public function edit(string $nameModal, array $data, int $id)
     {
         $response = $this->client->request(
             'PUT',
@@ -232,7 +182,7 @@ class ApiRequest
         return json_decode($response->getBody(), true);
     }
 
-      public  function getBreedByType($client, $selectedTypeId)
+      public  function getBreedByType(int $client, string $selectedTypeId)
     {
         $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue($selectedTypeId)));
 
