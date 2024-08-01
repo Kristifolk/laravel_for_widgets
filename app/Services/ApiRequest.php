@@ -44,20 +44,27 @@ class ApiRequest
     /**
      * @throws GuzzleException
      */
-    private function response(string $url, string $nameModal)
+    private function response(string $method, string $url, array $parameters = null)
     {
+        $options = [
+            'headers' => $this->authHeaders()->asKeyValue(),
+        ];
+
+        if ($parameters !== null){
+            if ($method === 'GET') {
+                $options['query'] = $parameters;
+            } else {
+                $options['json'] = $parameters;
+            }
+        }
+
         $response = $this->client->request(
-            'GET',
+            $method,
             $url,
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-//                'query' => $pagedQuery->asKeyValue()
-            ]
+            $options,
         );
 
-        $array = json_decode($response->getBody(), true);
-
-        return $array['data'][$nameModal];
+        return json_decode($response->getBody(), true);
     }
 
     /**
@@ -66,15 +73,18 @@ class ApiRequest
     public function allClients()
     {
         $url = "/rest/api/client/?filter=[{'property':'status', 'value':'ACTIVE'}]";
-        return $this->response($url, 'client');
+        $array = $this->response('GET', $url);
+        return $array['data']['client'];
     }
 
     /**
      *Вывод 1 клиента или 1 питомца, в зависимости от переданного значения имени модели $nameModal
      */
-    public function one(string $nameModal, int $id){
+    public function one(string $nameModal, int $id)
+    {
         $url = "/rest/api/$nameModal/$id";
-        return $this->response($url, $nameModal);
+        $array = $this->response('GET', $url);
+        return $array['data'][$nameModal];
     }
 
     /**
@@ -83,7 +93,8 @@ class ApiRequest
     public function allPetsClient(string $ownerId)
     {
         $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$ownerId'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
-        return $this->response($url, 'pet');
+        $array = $this->response('GET', $url);
+        return $array['data']['pet'];
     }
 
 //TODO поиск по полному ФИО
@@ -121,15 +132,8 @@ class ApiRequest
      */
     public function delete(string $nameModal, int $id)
     {
-        $response = $this->client->request(
-            'DELETE',
-            "/rest/api/$nameModal/$id",
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-            ]
-        );
-
-        $array = json_decode($response->getBody(), true);
+        $url = "/rest/api/$nameModal/$id";
+        $array = $this->response('DELETE', $url);
 
         if (!isset($array['success']) || $array['success'] === false) {
             throw new Exception($array['message']);
@@ -141,20 +145,15 @@ class ApiRequest
      */
     public function createInVetmanager(string $nameModal, array $data)
     {
-        $response = $this->client->request(
-            'POST',
-            "/rest/api/$nameModal",
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-                'json' => $data,
-            ]
-        );
-        $decodeBody = json_decode((string)$response->getBody(), true);
+        $url = "/rest/api/$nameModal";
+        $json = $data;
+        $array = $this->response('POST', $url, $json);
 
-        if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
-            throw new \Exception($decodeBody['message']);
+        if(!$array['success'] || $array['success'] !== true) {
+            throw new \Exception($array['message']);
         }
-        return $decodeBody;
+
+        return $array;
     }
 
     /**
@@ -162,18 +161,12 @@ class ApiRequest
      */
     public function edit(string $nameModal, array $data, int $id)
     {
-        $response = $this->client->request(
-            'PUT',
-            "/rest/api/$nameModal/$id",
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-                'json' => $data,
-            ]
-        );
+        $url = "/rest/api/$nameModal/$id";
+        $json = $data;
+        $array = $this->response('PUT', $url, $json);
 
-        $decodeBody = json_decode((string)$response->getBody(), true);
-        if(!$decodeBody['success'] || $decodeBody['success'] !== true) {
-            throw new \Exception($decodeBody['message']);
+        if(!$array['success'] || $array['success'] !== true) {
+            throw new \Exception($array['message']);
         }
     }
 
@@ -182,33 +175,20 @@ class ApiRequest
      */
     public  function petType()
     {
-        $response = $this->client->request(
-            'GET',
-            "/rest/api/PetType",
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-            ]
-        );
-        return json_decode($response->getBody(), true);
+        $url = "/rest/api/PetType";
+        return $this->response('GET', $url);
     }
 
     /**
      *Для fetch breedByTypeForSelectOption чтобы избежать блокировки политики CORS
+     *Не удалять неиспользуемый аргумент $client, тк breedByType будет неправильно отрабатывать: вместо id типа питомца будет подставлять id клиента
      */
       public  function breedByType(int $client, string $selectedTypeId)
     {
         $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue($selectedTypeId)));
+        $query = $filters->asKeyValue();
+        $url = "/rest/api/breed";
 
-        $response = $this->client->request(
-            'GET',
-//            "/rest/api/breed/?filter=[{'property':'pet_type_id', 'value':'$selectedTypeId'}]",
-            "/rest/api/breed",
-            [
-                'headers' => $this->authHeaders()->asKeyValue(),
-                'query' => $filters->asKeyValue(),
-            ]
-        );
-        return json_decode($response->getBody(), true);
+        return $this->response('GET', $url, $query);
     }
-
 }

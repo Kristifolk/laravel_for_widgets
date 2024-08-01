@@ -86,11 +86,9 @@ class ClientController extends Controller
             (new ApiRequest())->delete('client', $id);
 
             return redirect()->route('home')->with('message', 'Клиент успешно удален');
-//            return back()->with('message', 'Client deleted successfully');
 
         } catch (\Exception $exception) {
-            return back()->with('message',  $exception->getMessage());
-        }
+            return back()->withErrors($exception->getMessage());        }
     }
 
     /**

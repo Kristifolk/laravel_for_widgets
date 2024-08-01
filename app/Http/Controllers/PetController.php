@@ -84,7 +84,7 @@ class PetController extends Controller
             return back()->with('message', 'Питомец успешно удален');
 
         } catch (\Exception $exception) {
-            return back()->with('message',  $exception->getMessage());
+            return back()->withErrors($exception->getMessage());
         }
     }
 }
