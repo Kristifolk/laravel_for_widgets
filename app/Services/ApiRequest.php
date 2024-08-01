@@ -21,13 +21,13 @@ class ApiRequest
 
     public function __construct()
     {
-        $this->key = $this->getUserSettings()->api_key;
+        $this->key = $this->userSettings()->api_key;
         $this->client = new Client([
-            'base_uri' => $this->getUserSettings()->url,
+            'base_uri' => $this->userSettings()->url,
         ]);
     }
 
-    private function getUserSettings()
+    private function userSettings()
     {
         return UserSettingApi::where('user_id', Auth::user()->id)->first();
     }
@@ -60,21 +60,31 @@ class ApiRequest
         return $array['data'][$nameModal];
     }
 
-    public function getAllClients()
+    /**
+     *Вывод всех клиентов Ветменеджера
+     */
+    public function allClients()
     {
         $url = "/rest/api/client/?filter=[{'property':'status', 'value':'ACTIVE'}]";
         return $this->response($url, 'client');
     }
 
     /**
-     *Вывод 1 клиента
+     *Вывод 1 клиента или 1 питомца, в зависимости от переданного значения имени модели $nameModal
      */
-    public function getClient(int $id){
-        $url = "/rest/api/client/$id";
-        return $this->response($url, 'client');
+    public function one(string $nameModal, int $id){
+        $url = "/rest/api/$nameModal/$id";
+        return $this->response($url, $nameModal);
     }
 
-
+    /**
+     *Вывод всех питомцев одного клиента
+     */
+    public function allPetsClient(string $ownerId)
+    {
+        $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$ownerId'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
+        return $this->response($url, 'pet');
+    }
 
 //TODO поиск по полному ФИО
     /**
@@ -102,21 +112,12 @@ class ApiRequest
         return $foundClients['data']['client'];
     }
 
-    public function getAllPetsClient(string $ownerId)
-    {
-        $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$ownerId'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
-        return $this->response($url, 'pet');
-    }
-
-    public function getPet(int $id)
-    {
-        $url = "/rest/api/pet/$id";
-        return $this->response($url, 'pet');
-    }
-
     /**
      * @throws GuzzleException
      * @throws Exception
+     *
+     * Удаление клиента или питомца, в зависимости от переданного значения имени модели $nameModal
+     *
      */
     public function delete(string $nameModal, int $id)
     {
@@ -135,6 +136,9 @@ class ApiRequest
         }
     }
 
+    /**
+     *Создание клиента или питомца, в зависимости от переданного значения имени модели $nameModal
+     */
     public function createInVetmanager(string $nameModal, array $data)
     {
         $response = $this->client->request(
@@ -153,6 +157,9 @@ class ApiRequest
         return $decodeBody;
     }
 
+    /**
+     *Редактирование клиента или питомца, в зависимости от переданного значения имени модели $nameModal
+     */
     public function edit(string $nameModal, array $data, int $id)
     {
         $response = $this->client->request(
@@ -170,7 +177,10 @@ class ApiRequest
         }
     }
 
-    public  function getPetType()
+    /**
+     *Для fetch petTypesForSelectOption чтобы избежать блокировки политики CORS
+     */
+    public  function petType()
     {
         $response = $this->client->request(
             'GET',
@@ -182,7 +192,10 @@ class ApiRequest
         return json_decode($response->getBody(), true);
     }
 
-      public  function getBreedByType(int $client, string $selectedTypeId)
+    /**
+     *Для fetch breedByTypeForSelectOption чтобы избежать блокировки политики CORS
+     */
+      public  function breedByType(int $client, string $selectedTypeId)
     {
         $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue($selectedTypeId)));
 

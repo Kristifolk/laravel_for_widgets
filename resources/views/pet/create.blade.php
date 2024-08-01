@@ -90,10 +90,10 @@
         return true;
     }
 
-    async function getPetTypesForSelectOption() {
+    async function petTypesForSelectOption() {
     try {
         const responsePetTypes = await fetch(
-            "http://localhost:83/client/{{$ownerId}}/getPetType", {
+            "http://localhost:83/client/{{$ownerId}}/petType", {
         });
 
         if (!responsePetTypes.ok) {
@@ -114,7 +114,7 @@
        document.getElementById("typeId").innerHTML += row;
    }
 
-   async function getBreedByTypeForSelectOption() {
+   async function breedByTypeForSelectOption() {
        clearSelectOptionsBreedByType('breedId');
        const selectedTypeId = document.getElementById("typeId").value;
 
@@ -122,7 +122,7 @@
 
        try {
            const responseBreedByType = await fetch(
-               `http://localhost:83/client/{{$ownerId}}/getBreedByType/${selectedTypeId}`, {
+               `http://localhost:83/client/{{$ownerId}}/breedByType/${selectedTypeId}`, {
        });
            if (!responseBreedByType.ok) {
                throw new Error('Network response was not ok ' + responseBreedByType.statusText);
@@ -153,8 +153,8 @@
    }
 
    document.addEventListener("DOMContentLoaded", function() {
-       document.getElementById("typeId").addEventListener("change", getBreedByTypeForSelectOption);
-       getPetTypesForSelectOption();
+       document.getElementById("typeId").addEventListener("change", breedByTypeForSelectOption);
+       petTypesForSelectOption();
    });
 
 </script>

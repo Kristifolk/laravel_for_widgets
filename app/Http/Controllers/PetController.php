@@ -40,11 +40,11 @@ class PetController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Показать питомца.
      */
     public function show(int $id)
     {
-        $pet = (new ApiRequest())->getPet($id);
+        $pet = (new ApiRequest())->one('pet', $id);
         return view('pet.show', compact('pet'));
     }
 
@@ -53,7 +53,7 @@ class PetController extends Controller
      */
     public function edit(int $id)
     {
-        $oldPetInfo = (new ApiRequest())->getPet($id);
+        $oldPetInfo = (new ApiRequest())->one('pet', $id);
         return view('pet.edit', compact('oldPetInfo'));
     }
 

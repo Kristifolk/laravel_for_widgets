@@ -21,7 +21,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $clients = (new ApiRequest())->getAllClients();
+        $clients = (new ApiRequest())->allClients();
         $firstFiftyClients = array_slice($clients, 0, 50);
 
         return view('home', compact('firstFiftyClients'));

@@ -47,8 +47,8 @@ class ClientController extends Controller
      */
     public function show(string $ownerId)
     {
-        $client = (new ApiRequest())->getClient($ownerId);
-        $pets =  (new ApiRequest)->getAllPetsClient($ownerId);
+        $client = (new ApiRequest())->one('client', $ownerId);
+        $pets =  (new ApiRequest)->allPetsClient($ownerId);
 
         return view('client.show', compact('client', 'pets'));
     }
@@ -58,7 +58,7 @@ class ClientController extends Controller
      */
     public function edit(int $id)
     {
-        $oldClientInfo = (new ApiRequest())->getClient($id);
+        $oldClientInfo = (new ApiRequest())->one('client', $id);
         return view('client.edit', compact('oldClientInfo'));
     }
 
@@ -93,6 +93,9 @@ class ClientController extends Controller
         }
     }
 
+    /**
+     * Search by client's last name
+     */
     public function search(Request $request)//TOdo валидация?
     {
         $lastname = $request->input('last_name');
