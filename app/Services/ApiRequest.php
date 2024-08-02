@@ -19,6 +19,7 @@ class ApiRequest
     private Client $client;
     private $key;
 
+
     public function __construct()
     {
         $this->key = $this->userSettings()->api_key;
@@ -88,13 +89,31 @@ class ApiRequest
     }
 
     /**
-     *Вывод всех питомцев одного клиента
+     *Вывод всех питомцев (без удаленных) одного клиента
      */
     public function allPetsClient(string $ownerId)
     {
-        $url = "/rest/api/pet/?filter=[{'property':'owner_id', 'value':'$ownerId'},{'property':'status', 'value':'deleted', 'operator':'!='}]";
-        $array = $this->response('GET', $url);
-        return $array['data']['pet'];
+        $filters = [
+          [
+              'property' => 'owner_id',
+              'value' => $ownerId,
+          ],
+          [
+              'property' => 'status',
+                'value' => 'deleted',
+                'operator' => '!=',
+          ]
+        ];
+
+        $query = ['filter' => json_encode($filters)];
+        $url = "/rest/api/pet";
+        $array = $this->response('GET', $url, $query);
+
+        if (isset($array['data']['pet'])) {
+            return $array['data']['pet'];
+        } else {
+            return [];
+        }
     }
 
 //TODO поиск по полному ФИО
