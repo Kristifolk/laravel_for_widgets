@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchClientFormRequest;
 use App\Http\Requests\StoreClientFormRequest;
 use App\Http\Requests\StoreUpdateClientFormRequest;
 use App\Services\ApiRequest;
-use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -25,7 +25,7 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUpdateClientFormRequest $request)  //TOdo тест id client id pet создаются с шагом 2, id 50, id 52..
+    public function store(StoreUpdateClientFormRequest $request)
     {
         try {
             $validated = $request->validated();
@@ -94,10 +94,10 @@ class ClientController extends Controller
     /**
      * Search by client's last name
      */
-    public function search(Request $request)//TOdo валидация?
+    public function search(SearchClientFormRequest $request)
     {
         $lastname = $request->input('last_name');
-//        $firstname = $request->input('first_name');//TOdo поиск по ФИО,а не только фамилии?
+//        $firstname = $request->input('first_name');//TOdo поиск по полному ФИО,а не только фамилии
 //        $middlename = $request->input('middle_name');
 //        $foundClients = (new ApiRequest())->searchClients($lastname, $firstname, $middlename);
 
