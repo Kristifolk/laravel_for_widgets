@@ -25,34 +25,39 @@
 
 ## Инструкция по локальному развертыванию
 
-    1 Склонировать репозиторий на свой компьютер
+    1 Склонировать репозиторий на свой компьютер:
     git clone по SSH
 
     2 Скопировать переменные окружения и заполнить согласно docker-compose.yml:
     cp .env.example .env
 
-    3 Билбим и поднимаем контейнеры, проверяем,что запустились
+    3 Построить и запустить контейнеры Docker:
     docker compose build
     docker compose up -d
+    
+    4 Проверить, что контейнеры запустились:
     docker ps (три контейнера)
 
-    4 Зайти в контейнер и обновить зависимости Composer:
+    5.1 Зайти в контейнер:
     docker exec -it web-laravel-for-widgets  bash
+    
+    5.2 Oбновить зависимости Composer:
     composer update
 
-    5 Сгенерировать APP_KEY
+    5.3 Сгенерировать APP_KEY:
     php artisan key:generate
 
-    6 Накатить миграции
+    5.4 Накатить миграции:
     php artisan migrate
     
-    7 Запустить сидер
+    5.5 Запустить сидер:
     php artisan db:seed --class=UserSeeder
 
+    6 Установить npm-зависимости и запустить сборку Vite:
+    npm install && npm run dev
 
 ### Сайт
 http://localhost:83/
 
 ### Phpmyadmin 
 http://localhost:89/
-
