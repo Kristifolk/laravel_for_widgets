@@ -1,7 +1,7 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 
-## Laravel для виджетов  (20 дней)
+## Учебный проект Laravel для виджетов  (20 дней)
 
 [Информация о REST API](https://help.vetmanager.cloud/article/3029)  
 Написать приложение для работы с клиентами и питомцами ветменеджера через апи
@@ -22,3 +22,37 @@
 - Также во вьюшках используем @include других вьюшек
 - Используйте в роутерах [Route::resource](https://laravel.com/docs/10.x/controllers#resource-controllers) где это поможет сократить код
 - Для работы с Api использовать [библиотеку](https://github.com/otis22/vetmanager-rest-api)
+
+## Инструкция по локальному развертыванию
+
+    1 Склонировать репозиторий на свой компьютер
+    git clone по SSH
+
+    2 Скопировать переменные окружения и заполнить согласно docker-compose.yml:
+    cp .env.example .env
+
+    3 Билбим и поднимаем контейнеры, проверяем,что запустились
+    docker compose build
+    docker compose up -d
+    docker ps (три контейнера)
+
+    4 Зайти в контейнер и обновить зависимости Composer:
+    docker exec -it web-laravel-for-widgets  bash
+    composer update
+
+    5 Сгенерировать APP_KEY
+    php artisan key:generate
+
+    6 Накатить миграции
+    php artisan migrate
+    
+    7 Запустить сидер
+    php artisan db:seed --class=UserSeeder
+
+
+### Сайт
+http://localhost:83/
+
+### Phpmyadmin 
+http://localhost:89/
+
