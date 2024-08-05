@@ -25,7 +25,6 @@
                         <tbody>
                         @foreach($foundClients as $client)
                             <tr>
-{{--TODO корректная нумерация # клиентов --}}
                             <th>{{ $client['id'] }}</th>
                             <th>{{ $client['first_name'] }}</th>
                             <th>{{ $client['last_name'] }}</th>

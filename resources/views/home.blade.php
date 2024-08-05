@@ -38,7 +38,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {{--TODO корректная нумерация # клиентов вместо id или в дополнение к id --}}
                         @foreach($firstFiftyClients as $client)
                             <tr>
                             <th>{{ $client['id'] }}</th>
