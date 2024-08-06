@@ -6,7 +6,6 @@ use App\Models\UserSettingApi;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Auth;
 use Otis22\VetmanagerRestApi\Headers;
 use Otis22\VetmanagerRestApi\Headers\Auth\ApiKey;
 use Otis22\VetmanagerRestApi\Query\Filter\EqualTo;
@@ -20,17 +19,17 @@ class ApiRequest
     private $key;
 
 
+    /**
+     * @throws Exception
+     */
     public function __construct()
     {
-        $this->key = $this->userSettings()->api_key;
-        $this->client = new Client([
-            'base_uri' => $this->userSettings()->url,
-        ]);
-    }
+        $userApiSettings = UserSettingApi::userApiSettings();
 
-    private function userSettings()
-    {
-        return UserSettingApi::where('user_id', Auth::user()->id)->first();
+        $this->key = $userApiSettings->api_key;
+        $this->client = new Client([
+            'base_uri' => $userApiSettings->url,
+        ]);
     }
 
     private function authHeaders(): Headers\WithAuth
@@ -43,7 +42,7 @@ class ApiRequest
     }
 
     /**
-     * @throws GuzzleException
+     * @throws Exception
      */
     private function response(string $method, string $url, array $parameters = null)
     {
@@ -59,14 +58,54 @@ class ApiRequest
             }
         }
 
-        $response = $this->client->request(
-            $method,
-            $url,
-            $options,
-        );
+        try {
+            $response = $this->client->request($method, $url, $options);
+//            dd($response);
 
-        return json_decode($response->getBody(), true);
+//            if (!isset($response['success']) || $response['success'] === false) {
+//                throw new Exception($response['message']);
+//            }
+           return json_decode($response->getBody(), true);
+//            return $this->handleResponse($response);
+
+        } catch (GuzzleException $exception) {
+            throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: ' . $exception->getMessage());
+        } catch (Exception $exception) {
+            throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: '. $exception->getMessage());
+        }
+//        } catch (GuzzleException|Exception $exception) {
+//            return $this->handleException($exception);
+//        }
     }
+//        private function handleException(Exception $exception)
+//        {
+//            dd($exception->getMessage());
+//            return [
+//                'success' => false,
+//                'message' => 'Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: ' . $exception->getMessage(),
+//            ];
+//        }
+
+
+//    private function handleResponse($response)
+//    {
+////        $data = json_decode($response->getBody(), true);
+////
+////        if (!isset($data['success']) || $data['success'] === false) {
+////            throw new Exception($data['message']);
+////        }
+//
+//        try {
+//        $data = json_decode($response->getBody(), true);
+//                return $data;
+//
+//
+//        } catch (\Exception $exception) {
+//            return redirect('/settingsApi')->withErrors($exception->getMessage());
+//        }
+//
+////    return $data;
+//    }
 
     /**
      *Вывод всех клиентов Ветменеджера
@@ -88,6 +127,16 @@ class ApiRequest
         return $array['data'][$nameModal];
     }
 
+//    public function one(string $nameModal, int $id)
+//    {
+//        $url = "/rest/api/$nameModal/$id";
+//        $array = $this->response('GET', $url);
+//        if (!$array['success']) {
+//            return redirect('/settingsApi')->withErrors($array['message']);
+//        }
+//        return $array['data'][$nameModal];
+//
+//    }
     /**
      *Вывод всех питомцев (без удаленных) одного клиента
      */

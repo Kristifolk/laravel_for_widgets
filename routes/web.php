@@ -6,6 +6,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\UserSettingApiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Services\ApiRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,6 @@ Route::resource('client', ClientController::class);
 Route::get('search',[ClientController::class,'search'])->name('search');
 Route::resource('pet', PetController::class);
 Route::get('client/{client}/pet/create', [PetController::class, 'create'])->name('pet.create');
-Route::get('client/{client}/petType', [\App\Services\ApiRequest::class, 'petType'])->name('petType');
-Route::get('client/{client}/breedByType/{selectedTypeId}', [\App\Services\ApiRequest::class, 'breedByType'])->name('breedByType');
+Route::get('client/{client}/petType', [ApiRequest::class, 'petType'])->name('petType');
+Route::get('client/{client}/breedByType/{selectedTypeId}', [ApiRequest::class, 'breedByType'])->name('breedByType');
 Route::post('client/{client}/pet/store', [PetController::class, 'store'])->name('pet.store');
