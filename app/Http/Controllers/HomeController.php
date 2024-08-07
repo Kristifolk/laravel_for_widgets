@@ -30,8 +30,7 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            $clients = (new ApiRequest())->allClients();
-            $firstFiftyClients = array_slice($clients, 0, 50);
+            $firstFiftyClients = (new ApiRequest())->fiftyClients();
         } catch (\Exception $exception) {
             return redirect('/settingsApi')->withErrors($exception->getMessage());
         }

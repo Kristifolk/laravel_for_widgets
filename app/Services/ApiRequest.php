@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Otis22\VetmanagerRestApi\Headers;
 use Otis22\VetmanagerRestApi\Headers\Auth\ApiKey;
+use Otis22\VetmanagerRestApi\Query\Builder;
 use Otis22\VetmanagerRestApi\Query\Filter\EqualTo;
 use Otis22\VetmanagerRestApi\Query\Filter\Value\StringValue;
 use Otis22\VetmanagerRestApi\Query\Filters;
@@ -75,17 +76,30 @@ class ApiRequest
     }
 
     /**
-     *Вывод всех клиентов Ветменеджера
+     *Вывод 50 клиентов Ветменеджера
      */
-    public function allClients()
+    public function fiftyClients()
     {
         try {
-            $url = "/rest/api/client/?filter=[{'property':'status', 'value':'ACTIVE'}]";
-            $array = $this->response('GET', $url);
-            return $array['data']['client'];
-        }
-        catch (Exception $exception) {
-//            dd($exception->getMessage());//попадаю сюда, но не отрабатывает redirect и нет сообщения
+            $filters = [
+                [
+                    'property' => 'status',
+                    'value' => 'ACTIVE',
+                    ],
+            ];
+
+            $url = "/rest/api/client";
+            $paginate = (new Builder())->paginate(50, 0);
+            $query = array_merge(['filter' => json_encode($filters)], $paginate->asKeyValue());
+            $array = $this->response('GET', $url, $query);
+
+            if (isset($array['data']['client'])) {
+                return $array['data']['client'];
+            } else {
+                throw new Exception('Ошибка при получении данных клиентов.');
+            }
+        } catch (Exception $exception) {
+//            dd($exception->getMessage());//попадаю сюда,при dd вижу сообщение, но не отрабатывает redirect и нет красивого отображения сообщения
             return redirect('/settingsApi')->withErrors($exception->getMessage());
 //            return back()->withErrors($exception->getMessage());
         }
