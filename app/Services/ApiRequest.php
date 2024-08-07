@@ -60,61 +60,35 @@ class ApiRequest
 
         try {
             $response = $this->client->request($method, $url, $options);
-//            dd($response);
+            $data = json_decode($response->getBody(), true);
 
-//            if (!isset($response['success']) || $response['success'] === false) {
-//                throw new Exception($response['message']);
-//            }
-           return json_decode($response->getBody(), true);
-//            return $this->handleResponse($response);
+            if (!isset($data['success']) || $data['success'] === false) {
+                throw new Exception($data['message'] ?? 'Ошибка при формировании response');
+            }
+           return $data;
 
         } catch (GuzzleException $exception) {
             throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: ' . $exception->getMessage());
         } catch (Exception $exception) {
-            throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: '. $exception->getMessage());
+            throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: ' . $exception->getMessage());
         }
-//        } catch (GuzzleException|Exception $exception) {
-//            return $this->handleException($exception);
-//        }
     }
-//        private function handleException(Exception $exception)
-//        {
-//            dd($exception->getMessage());
-//            return [
-//                'success' => false,
-//                'message' => 'Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: ' . $exception->getMessage(),
-//            ];
-//        }
-
-
-//    private function handleResponse($response)
-//    {
-////        $data = json_decode($response->getBody(), true);
-////
-////        if (!isset($data['success']) || $data['success'] === false) {
-////            throw new Exception($data['message']);
-////        }
-//
-//        try {
-//        $data = json_decode($response->getBody(), true);
-//                return $data;
-//
-//
-//        } catch (\Exception $exception) {
-//            return redirect('/settingsApi')->withErrors($exception->getMessage());
-//        }
-//
-////    return $data;
-//    }
 
     /**
      *Вывод всех клиентов Ветменеджера
      */
     public function allClients()
     {
-        $url = "/rest/api/client/?filter=[{'property':'status', 'value':'ACTIVE'}]";
-        $array = $this->response('GET', $url);
-        return $array['data']['client'];
+        try {
+            $url = "/rest/api/client/?filter=[{'property':'status', 'value':'ACTIVE'}]";
+            $array = $this->response('GET', $url);
+            return $array['data']['client'];
+        }
+        catch (Exception $exception) {
+//            dd($exception->getMessage());//попадаю сюда, но не отрабатывает redirect и нет сообщения
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
+//            return back()->withErrors($exception->getMessage());
+        }
     }
 
     /**
@@ -122,46 +96,45 @@ class ApiRequest
      */
     public function one(string $nameModal, int $id)
     {
-        $url = "/rest/api/$nameModal/$id";
-        $array = $this->response('GET', $url);
-        return $array['data'][$nameModal];
+        try {
+            $url = "/rest/api/$nameModal/$id";
+            $array = $this->response('GET', $url);
+            return $array['data'][$nameModal];
+        }
+        catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
+        }
     }
 
-//    public function one(string $nameModal, int $id)
-//    {
-//        $url = "/rest/api/$nameModal/$id";
-//        $array = $this->response('GET', $url);
-//        if (!$array['success']) {
-//            return redirect('/settingsApi')->withErrors($array['message']);
-//        }
-//        return $array['data'][$nameModal];
-//
-//    }
     /**
      *Вывод всех питомцев (без удаленных) одного клиента
      */
     public function allPetsClient(string $ownerId)
     {
-        $filters = [
-          [
-              'property' => 'owner_id',
-              'value' => $ownerId,
-          ],
-          [
-              'property' => 'status',
-                'value' => 'deleted',
-                'operator' => '!=',
-          ]
-        ];
+        try {
+            $filters = [
+                [
+                    'property' => 'owner_id',
+                    'value' => $ownerId,
+                ],
+                [
+                    'property' => 'status',
+                    'value' => 'deleted',
+                    'operator' => '!=',
+                ]
+            ];
 
-        $query = ['filter' => json_encode($filters)];
-        $url = "/rest/api/pet";
-        $array = $this->response('GET', $url, $query);
+            $query = ['filter' => json_encode($filters)];
+            $url = "/rest/api/pet";
+            $array = $this->response('GET', $url, $query);
 
-        if (isset($array['data']['pet'])) {
-            return $array['data']['pet'];
-        } else {
-            return [];
+            if (isset($array['data']['pet'])) {
+                return $array['data']['pet'];
+            } else {
+                return [];
+            }
+        } catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
         }
     }
 
@@ -171,16 +144,20 @@ class ApiRequest
      */
     public function searchClients(string $lastname)
     {
-        $array['data']['client'] = [];
+        try {
+            $array['data']['client'] = [];
 
-        if(!empty($lastname)) {
-            $filters = new Filters(new EqualTo(new Property('last_name'), new StringValue($lastname)));
-            $url = "/rest/api/client";
-            $query = $filters->asKeyValue();
-            $array = $this->response('GET', $url, $query);
+            if (!empty($lastname)) {
+                $filters = new Filters(new EqualTo(new Property('last_name'), new StringValue($lastname)));
+                $url = "/rest/api/client";
+                $query = $filters->asKeyValue();
+                $array = $this->response('GET', $url, $query);
+            }
+
+            return $array['data']['client'];
+        } catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
         }
-
-        return $array['data']['client'];
     }
 
     /**
@@ -192,11 +169,15 @@ class ApiRequest
      */
     public function delete(string $nameModal, int $id)
     {
-        $url = "/rest/api/$nameModal/$id";
-        $array = $this->response('DELETE', $url);
+        try {
+            $url = "/rest/api/$nameModal/$id";
+            $array = $this->response('DELETE', $url);
 
-        if (!isset($array['success']) || $array['success'] === false) {
-            throw new Exception($array['message']);
+            if (!isset($array['success']) || $array['success'] === false) {
+                throw new Exception($array['message']);
+            }
+        } catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
         }
     }
 
@@ -205,15 +186,19 @@ class ApiRequest
      */
     public function createInVetmanager(string $nameModal, array $data)
     {
-        $url = "/rest/api/$nameModal";
-        $json = $data;
-        $array = $this->response('POST', $url, $json);
+        try {
+            $url = "/rest/api/$nameModal";
+            $json = $data;
+            $array = $this->response('POST', $url, $json);
 
-        if(!$array['success'] || $array['success'] !== true) {
-            throw new \Exception($array['message']);
+            if (!$array['success'] || $array['success'] !== true) {
+                throw new \Exception($array['message']);
+            }
+
+            return $array;
+        } catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
         }
-
-        return $array;
     }
 
     /**
@@ -221,12 +206,16 @@ class ApiRequest
      */
     public function edit(string $nameModal, array $data, int $id)
     {
-        $url = "/rest/api/$nameModal/$id";
-        $json = $data;
-        $array = $this->response('PUT', $url, $json);
+        try {
+            $url = "/rest/api/$nameModal/$id";
+            $json = $data;
+            $array = $this->response('PUT', $url, $json);
 
-        if(!$array['success'] || $array['success'] !== true) {
-            throw new \Exception($array['message']);
+            if (!$array['success'] || $array['success'] !== true) {
+                throw new \Exception($array['message']);
+            }
+        } catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
         }
     }
 
@@ -235,8 +224,12 @@ class ApiRequest
      */
     public  function petType()
     {
-        $url = "/rest/api/PetType";
-        return $this->response('GET', $url);
+        try {
+            $url = "/rest/api/PetType";
+            return $this->response('GET', $url);
+        } catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
+        }
     }
 
     /**
@@ -245,10 +238,14 @@ class ApiRequest
      */
       public  function breedByType(int $client, string $selectedTypeId)
     {
-        $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue($selectedTypeId)));
-        $query = $filters->asKeyValue();
-        $url = "/rest/api/breed";
+        try {
+            $filters = new Filters(new EqualTo(new Property('pet_type_id'), new StringValue($selectedTypeId)));
+            $query = $filters->asKeyValue();
+            $url = "/rest/api/breed";
 
-        return $this->response('GET', $url, $query);
+            return $this->response('GET', $url, $query);
+        } catch (Exception $exception) {
+            return redirect('/settingsApi')->withErrors($exception->getMessage());
+        }
     }
 }
