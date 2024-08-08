@@ -78,7 +78,7 @@ class ApiRequest
     /**
      *Вывод 50 клиентов Ветменеджера
      */
-    public function fiftyClients()
+    public function fiftyClients(int $currentPage)
     {
         try {
             $filters = [
@@ -89,12 +89,13 @@ class ApiRequest
             ];
 
             $url = "/rest/api/client";
-            $paginate = (new Builder())->paginate(50, 0);
+            $page = ($currentPage - 1);
+            $paginate = (new Builder())->paginate(50, $page);
             $query = array_merge(['filter' => json_encode($filters)], $paginate->asKeyValue());
             $array = $this->response('GET', $url, $query);
 
             if (isset($array['data']['client'])) {
-                return $array['data']['client'];
+                return $array['data'];
             } else {
                 throw new Exception('Ошибка при получении данных клиентов.');
             }

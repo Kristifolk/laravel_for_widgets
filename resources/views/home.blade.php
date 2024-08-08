@@ -63,6 +63,21 @@
                         </tbody>
                     </table>
                     {{-- Таблица END --}}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ route('home', ['page' => $currentPage - 1]) }}" tabindex="-1">Previous</a>
+                            </li>
+                            @for ($i = 1; $i <= $totalPage; $i++)
+                            <li class="page-item {{ $currentPage == $i }}">
+                                <a class="page-link" href="{{ route('home', ['page' => $i]) }}">{{ $i }}</a>
+                            </li>
+                            @endfor
+                            <li class="page-item {{ $currentPage == $totalPage ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ route('home', ['page' => $currentPage + 1]) }}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>

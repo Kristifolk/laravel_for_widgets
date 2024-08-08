@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Services\ApiRequest;
 
 class HomeController extends Controller
@@ -17,7 +18,7 @@ class HomeController extends Controller
     }
 
     /**
-     *Вывод по 50 клиентов на хоум странице
+     *Вывод по 50 клиентов на хоум странице $totalPage = количество клиентов / 50 клиентов на странице, если на следующей странице будет менее 50 клиентов, то выведет сколько есть
      */
 //    public function index()
 //    {
@@ -27,14 +28,22 @@ class HomeController extends Controller
 //        return view('home', compact('firstFiftyClients'));
 //    }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $firstFiftyClients = (new ApiRequest())->fiftyClients();
+            $currentPage = $request->get('page', 1);
+
+            if (!is_numeric($currentPage) || $currentPage < 1) {
+                $currentPage = 1;
+            }
+
+            $data = (new ApiRequest())->fiftyClients($currentPage);
+            $firstFiftyClients = $data['client'];
+            $totalPage = ceil($data['totalCount']/50);
+
         } catch (\Exception $exception) {
             return redirect('/settingsApi')->withErrors($exception->getMessage());
         }
-
-        return view('home', compact('firstFiftyClients'));
+        return view('home', compact('firstFiftyClients', 'currentPage', 'totalPage'));
     }
 }
