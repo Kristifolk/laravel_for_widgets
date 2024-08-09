@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\InvalidOrderException;
 use App\Models\UserSettingApi;
 use Exception;
 use GuzzleHttp\Client;
@@ -58,29 +59,28 @@ class ApiRequest
                 $options['json'] = $parameters;
             }
         }
-
         try {
             $response = $this->client->request($method, $url, $options);
             $data = json_decode($response->getBody(), true);
-
-            if (!isset($data['success']) || $data['success'] === false) {
-                throw new Exception($data['message'] ?? 'Ошибка при формировании response');
-            }
-           return $data;
-
-        } catch (GuzzleException $exception) {
-            throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: ' . $exception->getMessage());
-        } catch (Exception $exception) {
-            throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API: ' . $exception->getMessage());
+        } catch (\Throwable $exception) {
+            throw new InvalidOrderException($exception->getMessage());
         }
+
+
+        if (!isset($data['success']) || $data['success'] === false) {
+            throw new Exception($data['message'] ?? 'Ошибка при формировании response');
+        }
+
+       return $data;
     }
 
     /**
      *Вывод 50 клиентов Ветменеджера
+     * @throws Exception
      */
     public function fiftyClients(int $currentPage)
     {
-        try {
+//        try {
             $filters = [
                 [
                     'property' => 'status',
@@ -99,11 +99,22 @@ class ApiRequest
             } else {
                 throw new Exception('Ошибка при получении данных клиентов.');
             }
-        } catch (Exception $exception) {
-//            dd($exception->getMessage());//попадаю сюда,при dd вижу сообщение, но не отрабатывает redirect и нет красивого отображения сообщения
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
-//            return back()->withErrors($exception->getMessage());
-        }
+//        } catch (Exception $exception) {
+////            dd($exception->getMessage());//попадаю сюда,при dd вижу сообщение, но не отрабатывает redirect и нет красивого отображения сообщения
+////        } catch (Exception $exception) {
+////            return redirect('/settingsApi')->withErrors($exception->getMessage());
+////        }
+//
+//          session()->flash('error',//TOdo Этот flash('error', надо? удалить везде
+//              "Проверьте свои настройки: url клиники и API ключ.
+//              Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
+//          return [
+//              "totalCount" => 0,
+//              "client" => [],
+//          ];
+//        } catch (InvalidOrderException $exception) {
+//
+//        }
     }
 
     /**
@@ -149,7 +160,10 @@ class ApiRequest
                 return [];
             }
         } catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
+            session()->flash('error',
+                "Проверьте свои настройки: url клиники и API ключ.
+                Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
+            return [];
         }
     }
 
@@ -171,7 +185,10 @@ class ApiRequest
 
             return $array['data']['client'];
         } catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
+            session()->flash('error',
+                "Проверьте свои настройки: url клиники и API ключ.
+                Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
+            return [];
         }
     }
 
@@ -192,7 +209,10 @@ class ApiRequest
                 throw new Exception($array['message']);
             }
         } catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
+            session()->flash('error',
+                "Проверьте свои настройки: url клиники и API ключ.
+                Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
+            return [];
         }
     }
 

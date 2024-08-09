@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Services\ApiRequest;
 
@@ -32,7 +33,7 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        try {
+//        try {
             $currentPage = $request->get('page', 1);
 
             if (!is_numeric($currentPage) || $currentPage < 1) {
@@ -40,12 +41,12 @@ class HomeController extends Controller
             }
 
             $data = (new ApiRequest())->fiftyClients($currentPage);
+            if($data == null) {//TOdo Этот if надо?
+                throw new Exception('Проверьте свои настройки: url клиники и API ключ. Произошла ошибка при выполнении запроса к API');
+            }
             $firstFiftyClients = $data['client'];
             $totalPage = ceil($data['totalCount']/50);
 
-        } catch (\Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
-        }
         return view('home', compact('firstFiftyClients', 'currentPage', 'totalPage'));
     }
 }

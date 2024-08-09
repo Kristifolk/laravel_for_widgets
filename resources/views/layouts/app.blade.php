@@ -83,6 +83,13 @@
                     }, 1000);
                 </script>
             @endif
+            {{--  Отображение ошибочных сообщений --}}
+{{--            TOdo Это надо? session('error'--}}
+        @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
             {{--  Отображение сообщений об ошибках--}}
         @if ($errors->any())
                 <div class="alert alert-danger">
