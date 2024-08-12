@@ -6,7 +6,6 @@ use App\Exceptions\InvalidOrderException;
 use App\Models\UserSettingApi;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Otis22\VetmanagerRestApi\Headers;
 use Otis22\VetmanagerRestApi\Headers\Auth\ApiKey;
 use Otis22\VetmanagerRestApi\Query\Builder;
@@ -59,13 +58,13 @@ class ApiRequest
                 $options['json'] = $parameters;
             }
         }
+
         try {
             $response = $this->client->request($method, $url, $options);
             $data = json_decode($response->getBody(), true);
         } catch (\Throwable $exception) {
             throw new InvalidOrderException($exception->getMessage());
         }
-
 
         if (!isset($data['success']) || $data['success'] === false) {
             throw new Exception($data['message'] ?? 'Ошибка при формировании response');
@@ -80,16 +79,16 @@ class ApiRequest
      */
     public function fiftyClients(int $currentPage)
     {
-//        try {
-            $filters = [
-                [
-                    'property' => 'status',
-                    'value' => 'ACTIVE',
-                    ],
-            ];
+        $filters = [
+            [
+                'property' => 'status',
+                'value' => 'ACTIVE',
+                ],
+        ];
 
-            $url = "/rest/api/client";
-            $page = ($currentPage - 1);
+        $url = "/rest/api/client";
+        $page = ($currentPage - 1);
+        try {
             $paginate = (new Builder())->paginate(50, $page);
             $query = array_merge(['filter' => json_encode($filters)], $paginate->asKeyValue());
             $array = $this->response('GET', $url, $query);
@@ -99,83 +98,63 @@ class ApiRequest
             } else {
                 throw new Exception('Ошибка при получении данных клиентов.');
             }
-//        } catch (Exception $exception) {
-////            dd($exception->getMessage());//попадаю сюда,при dd вижу сообщение, но не отрабатывает redirect и нет красивого отображения сообщения
-////        } catch (Exception $exception) {
-////            return redirect('/settingsApi')->withErrors($exception->getMessage());
-////        }
-//
-//          session()->flash('error',//TOdo Этот flash('error', надо? удалить везде
-//              "Проверьте свои настройки: url клиники и API ключ.
-//              Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
-//          return [
-//              "totalCount" => 0,
-//              "client" => [],
-//          ];
-//        } catch (InvalidOrderException $exception) {
-//
-//        }
+
+        } catch (Exception $exception) {
+            throw new \Exception($exception->getMessage());
+        }
     }
 
     /**
      *Вывод 1 клиента или 1 питомца, в зависимости от переданного значения имени модели $nameModal
+     * @throws Exception
      */
     public function one(string $nameModal, int $id)
     {
-        try {
-            $url = "/rest/api/$nameModal/$id";
-            $array = $this->response('GET', $url);
-            return $array['data'][$nameModal];
-        }
-        catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
-        }
+        $url = "/rest/api/$nameModal/$id";
+        $array = $this->response('GET', $url);
+        return $array['data'][$nameModal];
     }
 
     /**
      *Вывод всех питомцев (без удаленных) одного клиента
+     * @throws Exception
      */
     public function allPetsClient(string $ownerId)
     {
-        try {
-            $filters = [
-                [
-                    'property' => 'owner_id',
-                    'value' => $ownerId,
-                ],
-                [
-                    'property' => 'status',
-                    'value' => 'deleted',
-                    'operator' => '!=',
-                ]
-            ];
+        $filters = [
+            [
+                'property' => 'owner_id',
+                'value' => $ownerId,
+            ],
+            [
+                'property' => 'status',
+                'value' => 'deleted',
+                'operator' => '!=',
+            ]
+        ];
 
-            $query = ['filter' => json_encode($filters)];
-            $url = "/rest/api/pet";
-            $array = $this->response('GET', $url, $query);
+        $query = ['filter' => json_encode($filters)];
+        $url = "/rest/api/pet";
+        $array = $this->response('GET', $url, $query);
 
-            if (isset($array['data']['pet'])) {
-                return $array['data']['pet'];
-            } else {
-                return [];
-            }
-        } catch (Exception $exception) {
-            session()->flash('error',
-                "Проверьте свои настройки: url клиники и API ключ.
-                Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
-            return [];
+        if (isset($array['data']['pet'])) {
+            return $array['data']['pet'];
+        } else {
+            throw new Exception('Ошибка при получении данных питомцев.');
         }
     }
 
 //TODO поиск по полному ФИО
+
     /**
      *Поиск по Фамилии по всем клиентам Ветменеджер, не только для первых 50 шт
+     * @throws Exception
      */
     public function searchClients(string $lastname)
     {
-        try {
-            $array['data']['client'] = [];
+        $array['data']['client'] = [];
 
+        try {
             if (!empty($lastname)) {
                 $filters = new Filters(new EqualTo(new Property('last_name'), new StringValue($lastname)));
                 $url = "/rest/api/client";
@@ -184,92 +163,72 @@ class ApiRequest
             }
 
             return $array['data']['client'];
+
         } catch (Exception $exception) {
-            session()->flash('error',
-                "Проверьте свои настройки: url клиники и API ключ.
-                Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
-            return [];
+            throw new \Exception($exception->getMessage());
         }
     }
 
     /**
-     * @throws GuzzleException
      * @throws Exception
-     *
      * Удаление клиента или питомца, в зависимости от переданного значения имени модели $nameModal
-     *
      */
-    public function delete(string $nameModal, int $id)
+    public function delete(string $nameModal, int $id): void
     {
-        try {
-            $url = "/rest/api/$nameModal/$id";
-            $array = $this->response('DELETE', $url);
+        $url = "/rest/api/$nameModal/$id";
+        $array = $this->response('DELETE', $url);
 
-            if (!isset($array['success']) || $array['success'] === false) {
-                throw new Exception($array['message']);
-            }
-        } catch (Exception $exception) {
-            session()->flash('error',
-                "Проверьте свои настройки: url клиники и API ключ.
-                Произошла ошибка при выполнении запроса к API: " . $exception->getMessage());
-            return [];
+        if (!isset($array['success']) || $array['success'] === false) {
+            throw new Exception($array['message']);
         }
     }
 
     /**
      *Создание клиента или питомца, в зависимости от переданного значения имени модели $nameModal
+     * @throws Exception
      */
     public function createInVetmanager(string $nameModal, array $data)
     {
-        try {
-            $url = "/rest/api/$nameModal";
-            $json = $data;
-            $array = $this->response('POST', $url, $json);
+        $url = "/rest/api/$nameModal";
+        $json = $data;
+        $array = $this->response('POST', $url, $json);
 
-            if (!$array['success'] || $array['success'] !== true) {
-                throw new \Exception($array['message']);
-            }
-
-            return $array;
-        } catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
+        if (!$array['success'] || $array['success'] !== true) {
+            throw new \Exception($array['message']);
         }
+
+        return $array;
     }
 
     /**
      *Редактирование клиента или питомца, в зависимости от переданного значения имени модели $nameModal
+     * @throws Exception
      */
-    public function edit(string $nameModal, array $data, int $id)
+    public function edit(string $nameModal, array $data, int $id): void
     {
-        try {
-            $url = "/rest/api/$nameModal/$id";
-            $json = $data;
-            $array = $this->response('PUT', $url, $json);
+        $url = "/rest/api/$nameModal/$id";
+        $json = $data;
+        $array = $this->response('PUT', $url, $json);
 
-            if (!$array['success'] || $array['success'] !== true) {
-                throw new \Exception($array['message']);
-            }
-        } catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
+        if (!$array['success'] || $array['success'] !== true) {
+            throw new \Exception($array['message']);
         }
     }
 
     /**
      *Для fetch petTypesForSelectOption чтобы избежать блокировки политики CORS
+     * @throws Exception
      */
     public  function petType()
     {
-        try {
-            $url = "/rest/api/PetType";
-            return $this->response('GET', $url);
-        } catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
-        }
+        $url = "/rest/api/PetType";
+        return $this->response('GET', $url);
     }
 
     /**
      *Для fetch breedByTypeForSelectOption чтобы избежать блокировки политики CORS
      *Не удалять неиспользуемый аргумент $client, тк breedByType будет неправильно отрабатывать: вместо id типа питомца будет подставлять id клиента
+     * @throws Exception
      */
       public  function breedByType(int $client, string $selectedTypeId)
     {
@@ -280,7 +239,7 @@ class ApiRequest
 
             return $this->response('GET', $url, $query);
         } catch (Exception $exception) {
-            return redirect('/settingsApi')->withErrors($exception->getMessage());
+            throw new \Exception($exception->getMessage());
         }
     }
 }

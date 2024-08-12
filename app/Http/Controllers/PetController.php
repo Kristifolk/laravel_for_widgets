@@ -22,25 +22,23 @@ class PetController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
     public function store(StorePetFormRequest $request,$ownerId)
     {
-        try {
-            $validated = $request->validated();
-            $decodeBodyResponse = (new ApiRequest())->createInVetmanager('pet', $validated);
+        $validated = $request->validated();
+        $decodeBodyResponse = (new ApiRequest())->createInVetmanager('pet', $validated);
 
-            if (!isset($decodeBodyResponse)) {
-                return back()->withErrors('Ошибка создания питомца');
-            }
-
-            return redirect("client/$ownerId")->with('message', 'Питомец успешно создан');
-        } catch (\Exception $exception) {
-            return back()->withErrors($exception->getMessage());
+        if (!isset($decodeBodyResponse)) {
+            return back()->withErrors('Ошибка создания питомца');
         }
+
+        return redirect("client/$ownerId")->with('message', 'Питомец успешно создан');
     }
 
     /**
      * Показать питомца.
+     * @throws \Exception
      */
     public function show(int $id)
     {
@@ -50,6 +48,7 @@ class PetController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     * @throws \Exception
      */
     public function edit(int $id)
     {
@@ -59,32 +58,25 @@ class PetController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(StorePetFormRequest $request, int $id)
     {
-        try {
-            $validated = $request->validated();
-            $ownerId = $validated['owner_id'];
+        $validated = $request->validated();
+        $ownerId = $validated['owner_id'];
 
-            (new ApiRequest())->edit('pet', $validated, $id);
+        (new ApiRequest())->edit('pet', $validated, $id);
 
-            return redirect("client/$ownerId")->with('message', 'Питомец успешно обновлен');
-        } catch (\Exception $exception) {
-            return back()->withErrors($exception->getMessage());
-        }
+        return redirect("client/$ownerId")->with('message', 'Питомец успешно обновлен');
     }
 
     /**
      * Remove the specified resource from storage.
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
-        try {
-            (new ApiRequest())->delete('pet', $id);
-            return back()->with('message', 'Питомец успешно удален');
-
-        } catch (\Exception $exception) {
-            return back()->withErrors($exception->getMessage());
-        }
+        (new ApiRequest())->delete('pet', $id);
+        return back()->with('message', 'Питомец успешно удален');
     }
 }

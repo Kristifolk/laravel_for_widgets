@@ -21,7 +21,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Http\Middleware\HandleApiExceptions::class,//TOdo Этот HandleApiExceptions надо?
     ];
 
     /**
@@ -66,6 +65,5 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check.api.settings' => \App\Http\Middleware\CheckApiSettings::class,
-        'handle.api.exceptions' => \App\Http\Middleware\HandleApiExceptions::class,//TOdo Этот HandleApiExceptions надо?
     ];
 }

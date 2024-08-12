@@ -25,10 +25,6 @@ Route::middleware(['check.api.settings'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 });
 
-//Route::get('/handle.api.exceptions', [ApiRequest::class, 'fiftyClients'])->middleware('handle.api.exceptions');
-Route::get('/handle.api.exceptions', [HomeController::class, 'index'])->middleware('handle.api.exceptions');//TOdo Этот middleware надо? удалить везде
-
-
 Route::resource('settingsApi', UserSettingApiController::class);
 Route::resource('client', ClientController::class);
 Route::get('search',[ClientController::class,'search'])->name('search');

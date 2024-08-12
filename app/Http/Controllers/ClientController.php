@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchClientFormRequest;
-use App\Http\Requests\StoreClientFormRequest;
 use App\Http\Requests\StoreUpdateClientFormRequest;
 use App\Services\ApiRequest;
 
@@ -24,26 +23,24 @@ class ClientController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
     public function store(StoreUpdateClientFormRequest $request)
     {
-        try {
-            $validated = $request->validated();
-            $decodeBodyResponse = (new ApiRequest())->createInVetmanager('client', $validated);
+        $validated = $request->validated();
+        $decodeBodyResponse = (new ApiRequest())->createInVetmanager('client', $validated);
 
-            if (!isset ($decodeBodyResponse) || !isset($decodeBodyResponse['data']['client'][0]['id'])) {
-                return back()->withErrors('Ошибка создания клиента');
-            }
-            $id = $decodeBodyResponse['data']['client'][0]['id'];
-
-            return redirect("client/$id")->with('message', 'Клиент успешно создан');
-        } catch (\Exception $exception) {
-            return back()->withErrors($exception->getMessage());
+        if (!isset ($decodeBodyResponse) || !isset($decodeBodyResponse['data']['client'][0]['id'])) {
+            return back()->withErrors('Ошибка создания клиента');
         }
+        $id = $decodeBodyResponse['data']['client'][0]['id'];
+
+        return redirect("client/$id")->with('message', 'Клиент успешно создан');
     }
 
     /**
      * Клиент и все его питомцы.
+     * @throws \Exception
      */
     public function show(string $ownerId)
     {
@@ -55,6 +52,7 @@ class ClientController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     * @throws \Exception
      */
     public function edit(int $id)
     {
@@ -64,35 +62,29 @@ class ClientController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(StoreUpdateClientFormRequest $request, int $id)
     {
-        try {
-            $validated = $request->validated();
-            (new ApiRequest())->edit('client', $validated, $id);
+        $validated = $request->validated();
+        (new ApiRequest())->edit('client', $validated, $id);
 
-            return redirect("client/$id")->with('message', 'Клиент успешно обновлен');
-        } catch (\Exception $exception) {
-            return back()->withErrors($exception->getMessage());
-        }
+        return redirect("client/$id")->with('message', 'Клиент успешно обновлен');
     }
 
     /**
      * Remove the specified resource from storage.
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
-        try {
-            (new ApiRequest())->delete('client', $id);
-
-            return redirect()->route('home')->with('message', 'Клиент успешно удален');
-
-        } catch (\Exception $exception) {
-            return back()->withErrors($exception->getMessage());        }
+        (new ApiRequest())->delete('client', $id);
+        return redirect()->route('home')->with('message', 'Клиент успешно удален');
     }
 
     /**
      * Search by client's last name
+     * @throws \Exception
      */
     public function search(SearchClientFormRequest $request)
     {

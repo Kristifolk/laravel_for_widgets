@@ -6,7 +6,8 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <h2>{{$exception}}</h2>
+                    <h2>Ошибка API</h2>
+                    <p>{{ $exception }}</p>
                 </div>
             </div>
         </div>
